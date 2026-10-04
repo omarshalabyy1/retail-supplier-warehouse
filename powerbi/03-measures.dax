@@ -1,0 +1,115 @@
+// 3. Measures. Create each one on the Measures table: Table tools -> New measure, paste, Enter.
+// The comment above each measure gives its display folder and format.
+// Amounts are in the store's currency (BRL).
+
+// ---------- Sales ----------
+
+// Folder: Sales | Format: Whole number, thousands separator | Item prices, freight excluded.
+Sales =
+SUM ( fact_order_items[price] )
+
+// Folder: Sales | Format: Whole number, thousands separator | Freight charged on the items.
+Freight =
+SUM ( fact_order_items[freight] )
+
+// Folder: Sales | Format: Percentage, 1 decimal | Freight as a share of sales.
+Freight % of Sales =
+DIVIDE ( [Freight], [Sales] )
+
+// Folder: Sales | Format: Whole number, thousands separator | Distinct orders.
+Orders =
+DISTINCTCOUNT ( fact_order_items[order_id] )
+
+// Folder: Sales | Format: Whole number, thousands separator | Order items (fact rows).
+Items =
+COUNTROWS ( fact_order_items )
+
+// Folder: Sales | Format: Decimal, 2 decimals | Sales per order.
+Average Order Value =
+DIVIDE ( [Sales], [Orders] )
+
+// ---------- Delivery ----------
+
+// Folder: Delivery | Format: Whole number, thousands separator | Items whose order was delivered.
+Delivered Items =
+CALCULATE ( [Items], fact_order_items[is_delivered] = TRUE () )
+
+// Folder: Delivery | Format: Whole number, thousands separator | Delivered items that arrived after the promised date.
+Late Items =
+CALCULATE ( [Items], fact_order_items[is_late] = TRUE () )
+
+// Folder: Delivery | Format: Percentage, 1 decimal | Share of delivered items that arrived late.
+Late Item Rate =
+DIVIDE ( [Late Items], [Delivered Items] )
+
+// Folder: Delivery | Format: Whole number, thousands separator | Delivered orders.
+Delivered Orders =
+CALCULATE ( [Orders], fact_order_items[is_delivered] = TRUE () )
+
+// Folder: Delivery | Format: Whole number, thousands separator | Delivered orders that arrived after the promised date.
+Late Orders =
+CALCULATE ( [Orders], fact_order_items[is_late] = TRUE () )
+
+// Folder: Delivery | Format: Percentage, 1 decimal | Share of delivered orders that arrived late.
+Late Order Rate =
+DIVIDE ( [Late Orders], [Delivered Orders] )
+
+// Folder: Delivery | Format: Decimal, 1 decimal | Days from purchase to delivery, each delivered order counted once.
+Average Delivery Days =
+VAR DeliveredOrders =
+    CALCULATETABLE (
+        SUMMARIZE ( fact_order_items, fact_order_items[order_id], fact_order_items[delivery_days] ),
+        fact_order_items[is_delivered] = TRUE ()
+    )
+RETURN
+    AVERAGEX ( DeliveredOrders, fact_order_items[delivery_days] )
+
+// Folder: Delivery | Format: Decimal, 2 decimals | Average review score (1 to 5), each reviewed order counted once.
+Average Review =
+VAR ReviewedOrders =
+    CALCULATETABLE (
+        SUMMARIZE ( fact_order_items, fact_order_items[order_id], fact_order_items[review_score] ),
+        NOT ISBLANK ( fact_order_items[review_score] )
+    )
+RETURN
+    AVERAGEX ( ReviewedOrders, fact_order_items[review_score] )
+
+// ---------- Suppliers ----------
+
+// Folder: Suppliers | Format: Whole number, thousands separator | Sellers with at least one item in the current filter.
+Sellers =
+DISTINCTCOUNT ( fact_order_items[seller_id] )
+
+// Folder: Suppliers | Format: Percentage, 1 decimal | This seller's share of all late items (ignores the seller filter).
+Share of All Late Items =
+VAR AllLate =
+    CALCULATE ( [Late Items], REMOVEFILTERS ( dim_seller ) )
+RETURN
+    DIVIDE ( [Late Items], AllLate )
+
+// Folder: Suppliers | Format: Percentage, 1 decimal | Share of all late items caused by the 100 sellers with the most late items
+// (ties broken by seller_id). Ignores every seller filter (state, seller), follows the year slicer.
+Top 100 Sellers Late Share =
+VAR Top100 =
+    CALCULATETABLE (
+        TOPN ( 100, VALUES ( dim_seller[seller_id] ), [Late Items], DESC, dim_seller[seller_id], ASC ),
+        REMOVEFILTERS ( dim_seller )
+    )
+RETURN
+    DIVIDE (
+        CALCULATE ( [Late Items], REMOVEFILTERS ( dim_seller ), Top100 ),
+        CALCULATE ( [Late Items], REMOVEFILTERS ( dim_seller ) )
+    )
+
+// Folder: Suppliers | Format: Percentage, 1 decimal | Share of all delivered items sold by those same 100 sellers.
+Top 100 Sellers Delivered Share =
+VAR Top100 =
+    CALCULATETABLE (
+        TOPN ( 100, VALUES ( dim_seller[seller_id] ), [Late Items], DESC, dim_seller[seller_id], ASC ),
+        REMOVEFILTERS ( dim_seller )
+    )
+RETURN
+    DIVIDE (
+        CALCULATE ( [Delivered Items], REMOVEFILTERS ( dim_seller ), Top100 ),
+        CALCULATE ( [Delivered Items], REMOVEFILTERS ( dim_seller ) )
+    )

@@ -1,0 +1,37 @@
+{
+  "name": "Retail Supplier Warehouse",
+  "dataColors": ["#2563EB", "#94A3B8", "#0E1630", "#60A5FA", "#CBD5E1", "#1E3A8A", "#64748B", "#BFDBFE"],
+  "good": "#16A34A",
+  "neutral": "#94A3B8",
+  "bad": "#DC2626",
+  "background": "#FFFFFF",
+  "foreground": "#0E1630",
+  "tableAccent": "#2563EB",
+  "textClasses": {
+    "title": { "fontFace": "Segoe UI Semibold", "fontSize": 13, "color": "#0E1630" },
+    "label": { "fontFace": "Segoe UI", "fontSize": 10, "color": "#334155" },
+    "callout": { "fontFace": "Segoe UI Semibold", "fontSize": 26, "color": "#0E1630" },
+    "header": { "fontFace": "Segoe UI Semibold", "fontSize": 12, "color": "#0E1630" }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "border": [{ "show": true, "color": { "solid": { "color": "#E2E8F0" } }, "radius": 8 }],
+        "background": [{ "show": true, "color": { "solid": { "color": "#FFFFFF" } }, "transparency": 0 }],
+        "dropShadow": [{ "show": false }],
+        "title": [{ "show": true, "fontColor": { "solid": { "color": "#0E1630" } } }]
+      }
+    },
+    "page": {
+      "*": {
+        "background": [{ "color": { "solid": { "color": "#F8FAFC" } }, "transparency": 0 }]
+      }
+    },
+    "card": {
+      "*": {
+        "labels": [{ "color": { "solid": { "color": "#0E1630" } } }],
+        "categoryLabels": [{ "show": true, "color": { "solid": { "color": "#64748B" } } }]
+      }
+    }
+  }
+}

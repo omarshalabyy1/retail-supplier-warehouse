@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 470" width="1000" height="470" role="img" aria-label="The warehouse in four layers, built from the bottom up every morning at 6am: 7 raw files with 446,873 rows load as is; 6 staging views clean them; a star schema of one order-item fact (112,650 rows) and four dimensions; 31 data tests; then the Power BI pages for sales, suppliers and late deliveries.">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="0.55" stop-color="#10213A"/>
+      <stop offset="1" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <marker id="up" viewBox="0 0 10 10" refX="5" refY="2" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 10 L5 0 L10 10 Z" fill="#3B82F6"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Segoe UI", -apple-system, Helvetica, Arial, sans-serif; }
+    .title { font-size: 21px; font-weight: 700; fill: #FFFFFF; }
+    .sub { font-size: 13.5px; fill: #CBD5E1; }
+    .layer { font-size: 16px; font-weight: 700; fill: #FFFFFF; }
+    .where { font-size: 12px; fill: #64748B; }
+    .note { font-size: 13px; fill: #CBD5E1; }
+    .count { font-size: 13px; font-weight: 700; fill: #93C5FD; }
+    .chip { font-size: 12px; fill: #E2E8F0; }
+    .floor { fill: #13233D; stroke: #334155; stroke-width: 1.5; }
+    .top { fill: #172B4D; stroke: #3B82F6; stroke-width: 1.5; }
+    .flow { stroke: #3B82F6; stroke-width: 2.5; stroke-dasharray: 4 6; animation: rise 1.6s linear infinite; }
+    @keyframes rise { to { stroke-dashoffset: 20; } }
+  </style>
+
+  <rect width="1000" height="470" rx="22" fill="url(#bg)"/>
+  <text x="40" y="50" class="title">One warehouse, four layers</text>
+  <text x="40" y="74" class="sub">Data enters at the bottom as it is and leaves at the top as answers. Each layer only reads the one below it.</text>
+
+  <!-- the schedule rail on the left -->
+  <circle cx="92" cy="420" r="26" fill="none" stroke="#3B82F6" stroke-width="2"/>
+  <line x1="92" y1="420" x2="92" y2="401" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+  <line x1="92" y1="420" x2="92" y2="431" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round"/>
+  <text x="92" y="460" class="chip" text-anchor="middle">6am daily</text>
+  <line x1="92" y1="392" x2="92" y2="112" class="flow" marker-end="url(#up)"/>
+  <text x="112" y="250" class="where" transform="rotate(-90 112 250)" text-anchor="middle">Airflow: load_raw, then dbt build</text>
+
+  <!-- 4 Power BI (top) -->
+  <rect class="top" x="150" y="98" width="810" height="68" rx="12"/>
+  <text x="172" y="128" class="layer">4  Power BI</text>
+  <text x="172" y="150" class="where">import from marts</text>
+  <rect x="400" y="116" width="120" height="30" rx="15" fill="#2563EB"/><text x="460" y="136" class="chip" text-anchor="middle">Sales</text>
+  <rect x="534" y="116" width="120" height="30" rx="15" fill="#2563EB"/><text x="594" y="136" class="chip" text-anchor="middle">Suppliers</text>
+  <rect x="668" y="116" width="140" height="30" rx="15" fill="#2563EB"/><text x="738" y="136" class="chip" text-anchor="middle">Late deliveries</text>
+
+  <!-- tests between star and Power BI -->
+  <text x="555" y="186" class="count" text-anchor="middle">31 data tests: keys, nulls, links, totals</text>
+
+  <!-- 3 Star schema -->
+  <rect class="floor" x="150" y="196" width="810" height="104" rx="12"/>
+  <text x="172" y="226" class="layer">3  Star schema</text>
+  <text x="172" y="248" class="where">schema marts, tables</text>
+  <text x="172" y="276" class="note">one row per order item</text>
+  <!-- the star -->
+  <g stroke="#475569" stroke-width="1.5">
+    <line x1="660" y1="248" x2="490" y2="222"/>
+    <line x1="660" y1="248" x2="490" y2="276"/>
+    <line x1="660" y1="248" x2="830" y2="222"/>
+    <line x1="660" y1="248" x2="830" y2="276"/>
+  </g>
+  <rect x="580" y="230" width="160" height="36" rx="8" fill="#2563EB"/>
+  <text x="660" y="246" class="chip" text-anchor="middle" font-weight="700">fact_order_items</text>
+  <text x="660" y="261" class="chip" text-anchor="middle">112,650 rows</text>
+  <g class="chip" text-anchor="middle">
+    <rect x="420" y="208" width="120" height="26" rx="6" fill="#1E293B" stroke="#475569"/><text x="480" y="226">dim_product</text>
+    <rect x="420" y="262" width="120" height="26" rx="6" fill="#1E293B" stroke="#475569"/><text x="480" y="280">dim_seller</text>
+    <rect x="780" y="208" width="120" height="26" rx="6" fill="#1E293B" stroke="#475569"/><text x="840" y="226">dim_customer</text>
+    <rect x="780" y="262" width="120" height="26" rx="6" fill="#1E293B" stroke="#475569"/><text x="840" y="280">dim_date</text>
+  </g>
+
+  <!-- 2 Staging -->
+  <rect class="floor" x="150" y="316" width="810" height="60" rx="12"/>
+  <text x="172" y="342" class="layer">2  Staging</text>
+  <text x="172" y="362" class="where">schema staging, views</text>
+  <text x="400" y="342" class="note">Types and dates set, names tidied, one review per order,</text>
+  <text x="400" y="362" class="note">departments in English</text>
+
+  <!-- 1 Raw -->
+  <rect class="floor" x="150" y="392" width="810" height="56" rx="12"/>
+  <text x="172" y="418" class="layer">1  Raw</text>
+  <text x="172" y="438" class="where">schema raw, all text</text>
+  <text x="400" y="418" class="note">7 CSV exports loaded exactly as they are, every load logged</text>
+  <text x="400" y="438" class="count">446,873 rows · 99,441 orders</text>
+</svg>

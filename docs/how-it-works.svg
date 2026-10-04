@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 250" width="1000" height="250" role="img" aria-label="How it works, every morning at 6am: 1 Collect the raw exports, 2 Clean them in staging, 3 Model a star schema, 4 Test keys, nulls and totals, 5 Report in Power BI.">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="0.55" stop-color="#10213A"/>
+      <stop offset="1" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#3B82F6"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Segoe UI", -apple-system, Helvetica, Arial, sans-serif; }
+    .title { font-size: 21px; font-weight: 700; fill: #FFFFFF; }
+    .sub { font-size: 13.5px; fill: #CBD5E1; }
+    .num { font-size: 13px; font-weight: 700; fill: #0B1220; }
+    .step { font-size: 16px; font-weight: 700; fill: #FFFFFF; }
+    .note { font-size: 12.5px; fill: #94A3B8; }
+    .box { fill: #13233D; stroke: #334155; stroke-width: 1.5; }
+  </style>
+
+  <rect width="1000" height="250" rx="22" fill="url(#bg)"/>
+  <text x="40" y="50" class="title">How it works</text>
+  <text x="40" y="74" class="sub">Every morning at 6am, Airflow runs the steps in order. A failed test turns the run red and skips what depends on it.</text>
+
+  <!-- five boxes, 168 wide, 24 gap, from x=40 -->
+  <g>
+    <rect class="box" x="40" y="104" width="168" height="112" rx="14"/>
+    <circle cx="66" cy="130" r="13" fill="#3B82F6"/><text x="66" y="135" class="num" text-anchor="middle">1</text>
+    <text x="88" y="136" class="step">Collect</text>
+    <text x="56" y="168" class="note">Orders, items, sellers,</text>
+    <text x="56" y="186" class="note">products, reviews land</text>
+    <text x="56" y="204" class="note">as is in raw tables</text>
+
+    <rect class="box" x="232" y="104" width="168" height="112" rx="14"/>
+    <circle cx="258" cy="130" r="13" fill="#3B82F6"/><text x="258" y="135" class="num" text-anchor="middle">2</text>
+    <text x="280" y="136" class="step">Clean</text>
+    <text x="248" y="168" class="note">Types, names, one</text>
+    <text x="248" y="186" class="note">review per order,</text>
+    <text x="248" y="204" class="note">departments in English</text>
+
+    <rect class="box" x="424" y="104" width="168" height="112" rx="14"/>
+    <circle cx="450" cy="130" r="13" fill="#3B82F6"/><text x="450" y="135" class="num" text-anchor="middle">3</text>
+    <text x="472" y="136" class="step">Model</text>
+    <text x="440" y="168" class="note">One fact per order item,</text>
+    <text x="440" y="186" class="note">product, seller,</text>
+    <text x="440" y="204" class="note">customer, date</text>
+
+    <rect class="box" x="616" y="104" width="168" height="112" rx="14"/>
+    <circle cx="642" cy="130" r="13" fill="#3B82F6"/><text x="642" y="135" class="num" text-anchor="middle">4</text>
+    <text x="664" y="136" class="step">Test</text>
+    <text x="632" y="168" class="note">Keys, nulls, links</text>
+    <text x="632" y="186" class="note">and totals checked</text>
+    <text x="632" y="204" class="note">on every load</text>
+
+    <rect class="box" x="808" y="104" width="152" height="112" rx="14"/>
+    <circle cx="834" cy="130" r="13" fill="#3B82F6"/><text x="834" y="135" class="num" text-anchor="middle">5</text>
+    <text x="856" y="136" class="step">Report</text>
+    <text x="824" y="168" class="note">Power BI sales,</text>
+    <text x="824" y="186" class="note">supplier and late</text>
+    <text x="824" y="204" class="note">delivery pages</text>
+  </g>
+
+  <g stroke="#3B82F6" stroke-width="2" marker-end="url(#arrow)">
+    <line x1="210" y1="160" x2="229" y2="160"/>
+    <line x1="402" y1="160" x2="421" y2="160"/>
+    <line x1="594" y1="160" x2="613" y2="160"/>
+    <line x1="786" y1="160" x2="805" y2="160"/>
+  </g>
+</svg>

@@ -1,0 +1,16 @@
+version: 2
+
+models:
+  - name: stg_orders
+    columns:
+      - name: order_id
+        data_tests: [unique, not_null]
+  - name: stg_order_items
+    columns:
+      - name: order_id
+        data_tests:
+          - relationships: {arguments: {to: ref('stg_orders'), field: order_id}}
+  - name: stg_reviews
+    columns:
+      - name: order_id
+        data_tests: [unique, not_null]

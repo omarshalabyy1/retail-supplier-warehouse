@@ -1,0 +1,12 @@
+name: retail_warehouse
+version: "1.0.0"
+profile: retail_warehouse
+
+models:
+  retail_warehouse:
+    staging:
+      +schema: staging
+      +materialized: view
+    marts:
+      +schema: marts
+      +materialized: table
