@@ -1,68 +1,66 @@
 # 4. Pages
 
-Three pages, each 1280 × 720 (**Format page → Canvas settings → 16:9**). Apply the theme first: **View → Themes → Browse for themes →** `05-theme.json`.
+Three pages, each 1280 × 720 (**Format page → Canvas settings → Type: 16:9**). Apply the theme first: **View → Themes → Browse for themes →** `05-theme.json`.
 
-Positions are in pixels (**Format → General → Properties → Size and position**). Cards show the measure only; set **Category label** on so the measure name shows under the number.
+Rename the pages (double-click the tab): `Sales`, `Suppliers`, `Late deliveries`.
 
-## Every page
+Build the visuals in the order listed. Positions are in pixels (**Format → General → Properties → Size and position**). The ID (P1-V1 …) is used in `07-interactions.md`. Wells not listed (Legend, Small multiples, Tooltips) stay empty: tooltips show the visual's own fields.
 
-| Visual | Position (x, y, w, h) | Fields | Settings |
-|---|---|---|---|
-| Text box (title) | 20, 16, 800, 44 | The page name | Segoe UI Semibold 20, colour #0E1630 |
-| Slicer | 980, 16, 280, 44 | `dim_date[year]` | Style **Tile**, single select off, **Select all** on |
+Cards: use the **Card** visual, **Callout value** = the measure, **Category label** on (shows the measure name, or the title given).
 
-Sync the year slicer across the three pages: select it → **View → Sync slicers** → tick **Sync** and **Visible** for all pages.
+## Every page (build these first on page 1, then copy them to pages 2 and 3)
 
-No drill-through and no bookmarks: the three pages answer three questions and the year slicer filters all of them.
+| ID | Visual | Position (x, y, w, h) | Fields | Settings |
+|---|---|---|---|---|
+| Px-T | Text box | 20, 16, 800, 44 | The page name | Segoe UI Semibold 20, colour #0E1630, no border |
+| Px-S | Slicer | 980, 16, 280, 44 | Field: `dim_date[year]` | **Slicer settings → Style: Tile**; **Selection: Multi-select with Ctrl** on, **Show "Select all"** on; slicer header off |
+
+Copy both to the other pages with Ctrl+C / Ctrl+V; when Power BI asks, choose **Sync** so the year slicer is one filter across the pages. Then check **View → Sync slicers**: for `year`, **Sync** and **Visible** ticked on all three pages.
 
 ## Page 1: Sales
 
 *How much did the store sell, and in which departments?*
 
-| Visual | Position (x, y, w, h) | Fields | Sort and formatting |
-|---|---|---|---|
-| Card | 20, 72, 295, 100 | `Sales` | Display units **Millions**, 2 decimals |
-| Card | 335, 72, 295, 100 | `Orders` | Display units **None** |
-| Card | 650, 72, 295, 100 | `Average Order Value` | 2 decimals |
-| Card | 965, 72, 295, 100 | `Freight % of Sales` | |
-| Line chart | 20, 188, 820, 512 | X: `dim_date[year_month]`; Y: `Sales` | Sort by `year_month` ascending; title "Sales by month"; line colour #2563EB |
-| Bar chart (clustered) | 856, 188, 404, 512 | Y: `dim_product[department]`; X: `Sales` | Visual filter on `department`: **Top N**, show top 10 by `Sales`; sort by `Sales` descending; title "Top 10 departments by sales"; data labels on |
-
-Tooltips: default (the fields in the visual).
+| ID | Visual | Position (x, y, w, h) | Fields | Format, sort, labels |
+|---|---|---|---|---|
+| P1-V1 | Card | 20, 72, 295, 100 | Fields: `Sales` | Callout display units **Millions**, 2 decimals (shows 13.59M) |
+| P1-V2 | Card | 335, 72, 295, 100 | Fields: `Orders` | Display units **None** (shows 98,666) |
+| P1-V3 | Card | 650, 72, 295, 100 | Fields: `Average Order Value` | Display units None, 2 decimals |
+| P1-V4 | Card | 965, 72, 295, 100 | Fields: `Freight % of Sales` | Measure format 0.0% |
+| P1-V5 | Line chart | 20, 188, 820, 512 | X-axis: `dim_date[year_month]`; Y-axis: `Sales` | Title "Sales by month"; sort axis by `year_month` ascending (**… → Sort axis**); X-axis type **Categorical**; Y-axis display units Thousands; line colour #2563EB, width 3; data labels off |
+| P1-V6 | Bar chart (clustered) | 856, 188, 404, 512 | Y-axis: `dim_product[department]`; X-axis: `Sales` | Title "Top 10 departments by sales"; visual filter on `department`: **Filter type: Top N → Show items: Top 10 → By value: Sales → Apply**; sort by `Sales` descending; data labels on, display units Thousands; bar colour #2563EB |
 
 ## Page 2: Suppliers
 
 *Which sellers cause the late deliveries, and is it more than their size?*
 
-| Visual | Position (x, y, w, h) | Fields | Sort and formatting |
-|---|---|---|---|
-| Card | 20, 72, 295, 100 | `Sellers` | Display units **None** |
-| Card | 335, 72, 295, 100 | `Late Item Rate` | |
-| Card | 650, 72, 295, 100 | `Top 100 Sellers Late Share` | Title "Late items from the top 100 sellers" |
-| Card | 965, 72, 295, 100 | `Top 100 Sellers Delivered Share` | Title "Delivered items from the same 100" |
-| Table | 20, 188, 820, 512 | `dim_seller[seller_id]`, `dim_seller[state]`, `Delivered Items`, `Late Items`, `Late Item Rate`, `Share of All Late Items`, `Average Review` | Sort by `Late Items` descending; **Conditional formatting → Data bars** on `Late Items` (bar colour #2563EB); **Background colour → Gradient** on `Late Item Rate` (lowest #FFFFFF, highest #FCA5A5); title "Sellers by late items" |
-| Bar chart (clustered) | 856, 188, 404, 512 | Y: `dim_seller[state]`; X: `Late Item Rate` | Visual filter: `Delivered Items` **is greater than or equal to** 500 (leaves out states with too few items to judge); sort by `Late Item Rate` descending; title "Late item rate by seller state"; data labels on |
-
-Tooltips on the table rows: default.
+| ID | Visual | Position (x, y, w, h) | Fields | Format, sort, labels |
+|---|---|---|---|---|
+| P2-V1 | Card | 20, 72, 295, 100 | Fields: `Sellers` | Display units **None** (shows 3,095) |
+| P2-V2 | Card | 335, 72, 295, 100 | Fields: `Late Item Rate` | 0.0% |
+| P2-V3 | Card | 650, 72, 295, 100 | Fields: `Top 100 Sellers Late Share` | 0.0%; category label text: rename the field in the well (double-click) to "Late items from the top 100 sellers" |
+| P2-V4 | Card | 965, 72, 295, 100 | Fields: `Top 100 Sellers Delivered Share` | 0.0%; rename in the well to "Delivered items from the same 100" |
+| P2-V5 | Table | 20, 188, 820, 512 | Columns, in this order: `dim_seller[seller_id]`, `dim_seller[state]`, `Delivered Items`, `Late Items`, `Late Item Rate`, `Share of All Late Items`, `Average Review` | Title "Sellers by late items"; sort by `Late Items` descending (click the header); **Cell elements → Late Items → Data bars** on, positive bar #2563EB; **Cell elements → Late Item Rate → Background colour** on, **Format style: Gradient**, lowest value #FFFFFF, highest value #FED7AA; totals row on |
+| P2-V6 | Bar chart (clustered) | 856, 188, 404, 512 | Y-axis: `dim_seller[state]`; X-axis: `Late Item Rate` | Title "Late item rate by seller state"; visual filter: drag `Delivered Items` into **Filters on this visual → Show items when the value: is greater than or equal to 500 → Apply** (leaves out states with too few items to judge); sort by `Late Item Rate` descending; data labels on, 0.0%; bar colour #2563EB |
 
 ## Page 3: Late deliveries
 
 *How often are orders late, and what does it cost?*
 
-| Visual | Position (x, y, w, h) | Fields | Sort and formatting |
-|---|---|---|---|
-| Card | 20, 72, 295, 100 | `Late Order Rate` | |
-| Card | 335, 72, 295, 100 | `Late Orders` | Display units **None** |
-| Card | 650, 72, 295, 100 | `Average Delivery Days` | 1 decimal |
-| Card | 965, 72, 295, 100 | `Average Review` | 2 decimals |
-| Column chart (clustered) | 20, 188, 400, 512 | X: `fact_order_items[is_late]`; Y: `Average Review` | Visual filter: `is_delivered` **is** True; sort by `is_late` ascending (False = on time, True = late); data labels on, 2 decimals; Y axis from 0 to 5; title "Average review: on time (False) vs late (True)" |
-| Line chart | 436, 188, 824, 250 | X: `dim_date[year_month]`; Y: `Late Order Rate` | Sort by `year_month` ascending; title "Late order rate by month" |
-| Bar chart (clustered) | 436, 454, 824, 246 | Y: `dim_product[department]`; X: `Late Item Rate` | Visual filter on `department`: **Top N**, top 10 by `Delivered Items`; sort by `Late Item Rate` descending; title "Late item rate, ten biggest departments"; data labels on |
+| ID | Visual | Position (x, y, w, h) | Fields | Format, sort, labels |
+|---|---|---|---|---|
+| P3-V1 | Card | 20, 72, 295, 100 | Fields: `Late Order Rate` | 0.0% |
+| P3-V2 | Card | 335, 72, 295, 100 | Fields: `Late Orders` | Display units **None** (shows 6,534) |
+| P3-V3 | Card | 650, 72, 295, 100 | Fields: `Average Delivery Days` | 1 decimal |
+| P3-V4 | Card | 965, 72, 295, 100 | Fields: `Average Review` | 2 decimals |
+| P3-V5 | Column chart (clustered) | 20, 188, 400, 512 | X-axis: `fact_order_items[is_late]`; Y-axis: `Average Review` | Title "Average review: on time (False) vs late (True)"; visual filter: `is_delivered` **Basic filtering → True** only; sort by `is_late` ascending; Y-axis range 0 to 5; data labels on, 2 decimals; columns #2563EB |
+| P3-V6 | Line chart | 436, 188, 824, 250 | X-axis: `dim_date[year_month]`; Y-axis: `Late Order Rate` | Title "Late order rate by month"; sort axis by `year_month` ascending; X-axis type Categorical; Y-axis 0.0%; line #2563EB, width 3; data labels off |
+| P3-V7 | Bar chart (clustered) | 436, 454, 824, 246 | Y-axis: `dim_product[department]`; X-axis: `Late Item Rate` | Title "Late item rate, ten biggest departments"; visual filter on `department`: **Top N → Top 10 → By value: Delivered Items → Apply**; sort by `Late Item Rate` descending; data labels on, 0.0%; bar colour #2563EB |
 
-## Interactions
+## Count
 
-Leave the defaults: clicking a bar or a table row cross-filters the other visuals on the same page. On page 2, check that clicking a state in the bar chart filters the table to that state's sellers, while the two "top 100" cards stay the same (they ignore the seller filter by design).
+3 pages, 25 visuals: per page one text box, one synced year slicer, four cards and two or three charts (page 1: 8, page 2: 8, page 3: 9).
 
 ## Save
 
-**File → Save as** `powerbi/retail-supplier-warehouse.pbix`. Then follow `06-checks.md`, and save one screenshot per page in `powerbi/screenshots/` (`1-sales.png`, `2-suppliers.png`, `3-late-deliveries.png`).
+**File → Save as** `powerbi/retail-supplier-warehouse.pbix`. Then set the interactions (`07-interactions.md`), check every number (`06-checks.md`), and save one screenshot per page in `powerbi/screenshots/` (`1-sales.png`, `2-suppliers.png`, `3-late-deliveries.png`).

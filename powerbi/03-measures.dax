@@ -1,6 +1,18 @@
 // 3. Measures. Create each one on the Measures table: Table tools -> New measure, paste, Enter.
 // The comment above each measure gives its display folder and format.
-// Amounts are in the store's currency (BRL).
+// Amounts are in the store's currency (BRL). No calculated columns or tables: everything else comes from the warehouse.
+//
+// Format in Measure tools -> Format, or type the format string:
+//   Whole number, thousands separator = #,0      Decimal, 2 decimals = #,0.00
+//   Decimal, 1 decimal = #,0.0                   Percentage, 1 decimal = 0.0%
+//
+// 18 measures. Create them in this order (later ones use earlier ones). Pages that use each:
+//   Page 1 Sales:            Sales, Orders, Average Order Value, Freight % of Sales
+//   Page 2 Suppliers:        Sellers, Late Item Rate, Top 100 Sellers Late Share, Top 100 Sellers Delivered Share,
+//                            Delivered Items, Late Items, Share of All Late Items, Average Review
+//   Page 3 Late deliveries:  Late Order Rate, Late Orders, Average Delivery Days, Average Review,
+//                            Late Item Rate, Delivered Items (Top N filter)
+//   Helpers (inside others): Freight, Items, Delivered Orders
 
 // ---------- Sales ----------
 

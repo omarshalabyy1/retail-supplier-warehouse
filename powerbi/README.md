@@ -12,11 +12,14 @@ Built in Power BI Desktop (free) on the warehouse's `marts` schema, by copying a
 
 ## Build it in this order
 
+Follow [`08-build-checklist.md`](08-build-checklist.md): it walks through the files below step by step, with the numbers to check at each stop.
+
 1. Start the stack and run the `retail_warehouse` DAG once (see the main README).
 2. [`01-power-query.md`](01-power-query.md): connect and load the five tables.
-3. [`02-model.md`](02-model.md): relationships, date table, sort-by columns, hidden columns.
-4. [`03-measures.dax`](03-measures.dax): every measure, with its folder and format.
-5. [`05-theme.json`](05-theme.json): **View → Themes → Browse for themes**.
-6. [`04-pages.md`](04-pages.md): the three pages, visual by visual.
-7. [`06-checks.md`](06-checks.md): every card must match; if one doesn't, the table says where to look.
-8. Save `retail-supplier-warehouse.pbix` here and one screenshot per page in `screenshots/`.
+3. [`02-model.md`](02-model.md): date table, relationships, column formats, sort-by columns, hidden columns.
+4. [`03-measures.dax`](03-measures.dax): the 18 measures, with folder, format and the pages that use them.
+5. [`05-theme.json`](05-theme.json): **View → Themes → Browse for themes**. The portfolio site's colours, so every project report looks like one family.
+6. [`04-pages.md`](04-pages.md): the three pages, 25 visuals, each with its position, fields and format.
+7. [`07-interactions.md`](07-interactions.md): which visual filters which, and the visual-level filters.
+8. [`06-checks.md`](06-checks.md): every card must match; if one doesn't, the table says where to look.
+9. Save `retail-supplier-warehouse.pbix` here and one screenshot per page in `screenshots/`.
