@@ -1,6 +1,6 @@
 # Retail supplier warehouse
 
-**99,441 orders loaded and tested every morning: 100 of 3,095 sellers account for half of all late deliveries.**
+**99,441 orders loaded and tested every morning: 100 of 3,095 sellers account for half of all late-delivered items.**
 
 ## The problem
 
