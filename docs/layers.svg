@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 470" width="1000" height="470" role="img" aria-label="The warehouse in four layers, built from the bottom up every morning at 6am: 7 raw files with 446,873 rows load as is; 6 staging views clean them; a star schema of one order-item fact (112,650 rows) and four dimensions; 31 data tests; then the Power BI pages for sales, suppliers and late deliveries.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 470" width="1000" height="470" role="img" aria-label="The warehouse in four layers, built from the bottom up every morning at 6am: 7 input files with 446,875 rows load as text; 6 staging views clean them; a star schema of one order-item fact (112,650 rows) and four dimensions; 31 data tests; then the Power BI pages for sales, suppliers and late deliveries.">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0B1220"/>
@@ -80,6 +80,6 @@
   <rect class="floor" x="150" y="392" width="810" height="56" rx="12"/>
   <text x="172" y="418" class="layer">1  Raw</text>
   <text x="172" y="438" class="where">schema raw, all text</text>
-  <text x="400" y="418" class="note">7 CSV exports loaded exactly as they are, every load logged</text>
-  <text x="400" y="438" class="count">446,873 rows · 99,441 orders</text>
+  <text x="400" y="418" class="note">7 input files checked, then loaded as text, every load logged</text>
+  <text x="400" y="438" class="count">446,875 rows · 99,441 orders</text>
 </svg>
