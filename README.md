@@ -3,6 +3,10 @@
 </p>
 
 <p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1200&color=2DD4BF&center=true&vCenter=true&width=760&lines=Retail+supplier+warehouse;Load.+Test.+Model.+Report.;99%2C441+orders%2C+rebuilt+every+morning;31+data+tests+on+every+load" alt="Retail supplier warehouse">
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Python-3.10-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.10">
   <img src="https://img.shields.io/badge/Apache_Airflow-3-017CEE?style=for-the-badge&logo=apacheairflow&logoColor=white" alt="Apache Airflow 3">
   <img src="https://img.shields.io/badge/dbt-1.10-FF694B?style=for-the-badge&logo=dbt&logoColor=white" alt="dbt 1.10">
@@ -28,6 +32,10 @@ The mental model is four layers. Each one only reads the layer below it, so a mi
 ![One warehouse, four layers](docs/layers.svg)
 
 ## 📈 The result
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/74038190/221352987-68da234d-4d62-4e9d-9d7f-098dc657c2dc.gif" width="100" alt="Moving chart">
+</p>
 
 - **99,441 orders** (112,650 order items) load every morning, and **31 data tests** pass on every run: keys, missing values, links between tables, and totals that must equal the raw file to the cent.
 - **6.8% of delivered orders arrive late** (6,534 of 96,470).
@@ -55,6 +63,10 @@ Three pages: **Sales**, **Suppliers** and **Late deliveries**. The [`powerbi/`](
 *Screenshots are added here once the report is built.*
 
 ## ▶️ How to run it
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/74038190/212284087-bbe7e430-757e-4901-90bf-4cd2ce3e1852.gif" width="100" alt="Code">
+</p>
 
 You need Docker Desktop, and Python 3.10+ for the notebook.
 
@@ -103,3 +115,7 @@ Stack: PostgreSQL 17, Python, dbt Core, Apache Airflow 3, Docker Compose, Power 
 ## 🗂️ Data
 
 The [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) on Kaggle (CC BY-NC-SA 4.0): about 100,000 orders placed from 2016 to 2018. Its sellers stand in for the store's suppliers and its product categories for departments. Amounts are in Brazilian reais. The files are not in this repo (the licence is non-commercial); download them from Kaggle into `data/input/`. `data/input/departments.csv`, the category-to-department mapping, is committed: it is derived from the dataset's category translation file (CC BY-NC-SA 4.0, same Kaggle link); a client's private copy replaces it with their own mapping.
+
+<p align="center">
+  <img width="100%" src="docs/footer.svg" alt="A warehouse that rebuilds and tests itself every morning.">
+</p>
