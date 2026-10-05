@@ -1,9 +1,8 @@
--- One row per product. The department is the product category in English; two categories
--- have no English name (kept in Portuguese) and products without a category get 'unknown'.
+-- One row per product, with its department from the client's departments file
+-- (load.py stops if a category has no department). Products without a category get 'unknown'.
 select
     p.product_id,
-    replace(coalesce(t.product_category_name_english, p.product_category_name, 'unknown'), '_', ' ') as department,
-    p.product_weight_g::int as weight_g
+    coalesce(d.department, 'unknown') as department
 from {{ source('raw', 'products') }} p
-left join {{ source('raw', 'category_translation') }} t
-    on t.product_category_name = p.product_category_name
+left join {{ source('raw', 'departments') }} d
+    on d.category_code = p.product_category_name

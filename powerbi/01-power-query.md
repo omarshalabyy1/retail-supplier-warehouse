@@ -15,9 +15,11 @@ Repeat steps 1 to 3 for each query below.
 
 ## Warehouse (staging only, not loaded)
 
+The server, database and user are the `warehouse` values in `config/client.yaml`; the code below has the demo values (`127.0.0.1:5441`, `warehouse`). For a client, change them in this query only. Credentials: user = `warehouse.user`, password = `DB_PASSWORD` in `.env`.
+
 ```m
 let
-    Source = PostgreSQL.Database("localhost:5441", "warehouse")
+    Source = PostgreSQL.Database("127.0.0.1:5441", "warehouse")
 in
     Source
 ```
@@ -59,8 +61,7 @@ let
     Table = Source{[Schema = "marts", Item = "dim_product"]}[Data],
     Typed = Table.TransformColumnTypes(Table, {
         {"product_id", type text},
-        {"department", type text},
-        {"weight_g", Int64.Type}
+        {"department", type text}
     })
 in
     Typed
@@ -76,7 +77,9 @@ let
         {"seller_id", type text},
         {"zip_prefix", type text},
         {"city", type text},
-        {"state", type text}
+        {"state", type text},
+        {"late_rank", Int64.Type},
+        {"is_top_late_seller", type logical}
     })
 in
     Typed

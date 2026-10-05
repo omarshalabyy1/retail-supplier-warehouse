@@ -15,12 +15,12 @@ Why Filter, not Highlight: the cards and rates must recompute for the selection;
 
 ### Page 2: Suppliers
 
-| Source ↓ / Target → | V1 Sellers | V2 Late rate | V3 Top 100 late | V4 Top 100 delivered | V5 Table | V6 States |
+| Source ↓ / Target → | V1 Sellers | V2 Late rate | V3 Top sellers late | V4 Top sellers delivered | V5 Table | V6 States |
 |---|---|---|---|---|---|---|
 | P2-V5 table (click a seller) | Filter | Filter | Filter | Filter | — | None |
 | P2-V6 states (click a bar) | Filter | Filter | Filter | Filter | Filter | — |
 
-V3 and V4 stay at 50.4% and 41.6% when a seller or state is clicked: both measures ignore seller filters on purpose. V5 → V6 is None because a single seller's state may fall under the 500-item filter and the chart would go empty.
+V3 and V4 stay at 50.4% and 41.6% when a seller or state is clicked: both measures ignore seller filters on purpose. V5 → V6 is None because a single seller's state may fall under the `report.min_state_items` filter and the chart would go empty.
 
 ### Page 3: Late deliveries
 
@@ -40,7 +40,7 @@ The year slicer (Px-S) and the text box (Px-T) keep the defaults: the slicer fil
 |---|---|
 | Report (all pages) | None |
 | Page | None on all three pages |
-| Visual | P1-V6: `department` Top 10 by `Sales` · P2-V6: `Delivered Items` ≥ 500 · P3-V5: `is_delivered` is True · P3-V7: `department` Top 10 by `Delivered Items` |
+| Visual | P1-V6: `department` Top 10 by `Sales` · P2-V6: `Delivered Items` ≥ `report.min_state_items` (demo: 500) · P3-V5: `is_delivered` is True · P3-V7: `department` Top 10 by `Delivered Items` |
 
 ## Not used
 

@@ -32,24 +32,20 @@ from marts.fact_order_items group by 1 order by 1;
 |---|---|---|
 | Sellers card | 3,095 | |
 | Late Item Rate card | 6.6% (7,264 late of 110,189 delivered items) | `Delivered Items` and `Late Items` filter on `is_delivered` and `is_late` |
-| Top 100 sellers late share card | 50.4% | Both `TOPN` calls break ties by `seller_id` |
-| Top 100 sellers delivered share card | 41.6% | |
+| Top sellers late share card (`rules.top_sellers` = 100) | 50.4% | `dim_seller[is_top_late_seller]` loaded as True/False; both measures use `REMOVEFILTERS ( dim_seller )` |
+| Top sellers delivered share card | 41.6% | |
 | Table, first row | seller 4a3ca9315b744ce9f8e9374361493884: 1,949 delivered, 189 late, 9.7% | Table sorted by `Late Items` descending |
 | Table, second row | seller 1f50f920176fa81dab994f9023523100: 1,926 delivered, 150 late, 7.8% | |
-| Click a state in the bar chart | the two top-100 cards stay at 50.4% and 41.6% | Both measures use `REMOVEFILTERS ( dim_seller )` |
+| State bar chart, top bar (`report.min_state_items` = 500) | SP, 7.1% (5,585 late of 78,598 delivered items) | Visual filter `Delivered Items` ≥ 500; sort by `Late Item Rate` descending |
+| Click a state in the bar chart | the two top-seller cards stay at 50.4% and 41.6% | Both measures use `REMOVEFILTERS ( dim_seller )` |
 
 ```sql
-with sellers as (
-    select seller_id,
-           count(*) filter (where is_delivered) as delivered_items,
-           count(*) filter (where is_late)      as late_items,
-           row_number() over (order by count(*) filter (where is_late) desc, seller_id) as late_rank
-    from marts.fact_order_items
-    group by seller_id
-)
-select sum(late_items) filter (where late_rank <= 100)::numeric / sum(late_items)           as top_100_late_share,
-       sum(delivered_items) filter (where late_rank <= 100)::numeric / sum(delivered_items) as top_100_delivered_share
-from sellers;
+select sum(case when s.is_top_late_seller and f.is_late then 1 else 0 end)::numeric
+         / sum(case when f.is_late then 1 else 0 end)      as top_sellers_late_share,
+       sum(case when s.is_top_late_seller and f.is_delivered then 1 else 0 end)::numeric
+         / sum(case when f.is_delivered then 1 else 0 end) as top_sellers_delivered_share
+from marts.fact_order_items f
+join marts.dim_seller s using (seller_id);
 ```
 
 ## Page 3: Late deliveries

@@ -51,7 +51,7 @@ Select the column → **Column tools → Format**:
 |---|---|
 | `fact_order_items[price]`, `fact_order_items[freight]` | Decimal number, 2 decimals, thousands separator on |
 | `fact_order_items[order_date]`, `[promised_date]`, `[delivered_date]`, `dim_date[date]` | Date, `yyyy-mm-dd` |
-| `fact_order_items[delivery_days]`, `[review_score]`, `dim_product[weight_g]` | Whole number |
+| `fact_order_items[delivery_days]`, `[review_score]`, `dim_seller[late_rank]` | Whole number |
 | `dim_date[year]` | Whole number, thousands separator **off** (shows 2017, not 2,017) |
 | `dim_seller[zip_prefix]`, `dim_customer[zip_prefix]` | Text (keeps leading zeros) |
 
@@ -61,6 +61,7 @@ Right-click → **Hide in report view**. Report users pick fields from the dimen
 
 - In `fact_order_items`: `product_id`, `seller_id`, `customer_id`, `order_date`, `price`, `freight`, `delivery_days`, `review_score`, `order_item_id`.
 - In `dim_customer`: `customer_id`.
+- In `dim_seller`: `late_rank`, `is_top_late_seller` (used by the top-seller measures; set in the warehouse from `rules.top_sellers`, so the notebook, the SQL checks and the report share one ranking).
 
 Keep visible in the fact: `order_id`, `order_status`, `is_delivered`, `is_late`, `promised_date`, `delivered_date` (used on axes and in visual filters).
 

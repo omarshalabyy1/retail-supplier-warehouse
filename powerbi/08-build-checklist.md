@@ -19,25 +19,25 @@ Follow it top to bottom. **Check** lines are the numbers you must see before mov
    **Check:** Model view shows four many-to-one lines, all ending on `fact_order_items`, single arrows pointing to the fact.
 6. **Measures** (`02-model.md` last section, then `03-measures.dax`): create the `Measures` table, paste the 18 measures in file order, set each folder and format, delete `Column1`.
    **Check** (drop each into a temporary card, then delete it): `Items` 112,650 · `Delivered Items` 110,189 · `Late Items` 7,264 · `Sales` 13,591,643.70.
-7. **Theme** (`05-theme.json`): **View → Themes → Browse for themes** → pick the file. **Check:** page background turns light grey-blue (#F4F6FB).
+7. **Theme** (`05-theme.json`): **View → Themes → Browse for themes** → pick the file. **Check:** the page background turns to `report.colours.page` (demo: light grey-blue). For a client, run `python theme.py` first: it writes the client's colours into this file.
 
 ## Pages (`04-pages.md`)
 
 8. Page 1 **Sales**: canvas 16:9, then Px-T, Px-S, P1-V1 to P1-V6 in order.
    **Check:** Sales 13.59M · Orders 98,666 · Average Order Value 137.75 · Freight % of Sales 16.6% · top department bar health beauty.
 9. Copy Px-T and Px-S to a new page **Suppliers** (choose **Sync**), then P2-V1 to P2-V6.
-   **Check:** Sellers 3,095 · Late Item Rate 6.6% · Top 100 late share 50.4% · Top 100 delivered share 41.6% · table first row seller 4a3ca9315b744ce9f8e9374361493884 with 1,949 delivered, 189 late, 9.7%.
+   **Check:** Sellers 3,095 · Late Item Rate 6.6% · Top sellers late share 50.4% · Top sellers delivered share 41.6% · table first row seller 4a3ca9315b744ce9f8e9374361493884 with 1,949 delivered, 189 late, 9.7%.
 10. Copy Px-T and Px-S to a new page **Late deliveries** (choose **Sync**), then P3-V1 to P3-V7.
     **Check:** Late Order Rate 6.8% · Late Orders 6,534 · Average Delivery Days 12.5 · Average Review 4.10 · review chart False 4.29, True 2.27 · top department bar health beauty 7.6%.
-11. **View → Sync slicers**: `year` synced and visible on all three pages. Click **2017** on any page.
+11. **View → Sync slicers**: `year` synced and visible on all three pages. Click `report.check_year` (demo: **2017**) on any page.
     **Check:** Sales 6,155,806.98 · Orders 44,579 · Late Order Rate 5.6%. Then 2016: 1.1%; 2018: 7.7%. Set it back to **Select all**.
 
 ## Interactions and save
 
 12. **Interactions** (`07-interactions.md`): set the three matrices.
-    **Check:** on Suppliers, click a state bar: the table shows only that state's sellers, the two top-100 cards stay at 50.4% and 41.6%. On Late deliveries, click a column of the review chart: nothing else changes.
+    **Check:** on Suppliers, click a state bar: the table shows only that state's sellers, the two top-seller cards stay at 50.4% and 41.6%. On Late deliveries, click a column of the review chart: nothing else changes.
 13. **File → Save as** `powerbi/retail-supplier-warehouse.pbix`.
-14. Run every SQL query in `06-checks.md` (any SQL tool on `localhost:5441`, database `warehouse`). **Check:** each result matches its page.
+14. Run every SQL query in `06-checks.md` (any SQL tool on `warehouse.host:warehouse.port`, database `warehouse.database` from `config/client.yaml`; demo `127.0.0.1:5441`, `warehouse`). **Check:** each result matches its page.
 
 ## Screenshots and finish
 

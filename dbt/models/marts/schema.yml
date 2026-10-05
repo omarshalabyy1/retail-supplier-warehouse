@@ -45,11 +45,6 @@ models:
         data_tests:
           - not_null
           - relationships: {arguments: {to: ref('dim_date'), field: date}}
-      - name: order_status
-        data_tests:
-          - accepted_values:
-              arguments:
-                values: [delivered, shipped, canceled, unavailable, invoiced, processing, created, approved]
       - name: price
         data_tests: [not_null]
       - name: freight

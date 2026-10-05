@@ -1,6 +1,6 @@
 // 3. Measures. Create each one on the Measures table: Table tools -> New measure, paste, Enter.
 // The comment above each measure gives its display folder and format.
-// Amounts are in the store's currency (BRL). No calculated columns or tables: everything else comes from the warehouse.
+// Amounts are in the client's currency (client.currency in config/client.yaml). No calculated columns or tables: everything else comes from the warehouse.
 //
 // Format in Measure tools -> Format, or type the format string:
 //   Whole number, thousands separator = #,0      Decimal, 2 decimals = #,0.00
@@ -8,7 +8,7 @@
 //
 // 18 measures. Create them in this order (later ones use earlier ones). Pages that use each:
 //   Page 1 Sales:            Sales, Orders, Average Order Value, Freight % of Sales
-//   Page 2 Suppliers:        Sellers, Late Item Rate, Top 100 Sellers Late Share, Top 100 Sellers Delivered Share,
+//   Page 2 Suppliers:        Sellers, Late Item Rate, Top Sellers Late Share, Top Sellers Delivered Share,
 //                            Delivered Items, Late Items, Share of All Late Items, Average Review
 //   Page 3 Late deliveries:  Late Order Rate, Late Orders, Average Delivery Days, Average Review,
 //                            Late Item Rate, Delivered Items (Top N filter)
@@ -99,29 +99,18 @@ VAR AllLate =
 RETURN
     DIVIDE ( [Late Items], AllLate )
 
-// Folder: Suppliers | Format: Percentage, 1 decimal | Share of all late items caused by the 100 sellers with the most late items
-// (ties broken by seller_id). Ignores every seller filter (state, seller), follows the year slicer.
-Top 100 Sellers Late Share =
-VAR Top100 =
-    CALCULATETABLE (
-        TOPN ( 100, VALUES ( dim_seller[seller_id] ), [Late Items], DESC, dim_seller[seller_id], ASC ),
-        REMOVEFILTERS ( dim_seller )
-    )
-RETURN
-    DIVIDE (
-        CALCULATE ( [Late Items], REMOVEFILTERS ( dim_seller ), Top100 ),
-        CALCULATE ( [Late Items], REMOVEFILTERS ( dim_seller ) )
-    )
+// Folder: Suppliers | Format: Percentage, 1 decimal | Share of all late items caused by the top sellers: the sellers flagged
+// dim_seller[is_top_late_seller] (the rules.top_sellers sellers with the most late items over all time, set in the warehouse).
+// Ignores every seller filter (state, seller); follows the year slicer, while the flag itself stays all-time.
+Top Sellers Late Share =
+DIVIDE (
+    CALCULATE ( [Late Items], REMOVEFILTERS ( dim_seller ), dim_seller[is_top_late_seller] = TRUE () ),
+    CALCULATE ( [Late Items], REMOVEFILTERS ( dim_seller ) )
+)
 
-// Folder: Suppliers | Format: Percentage, 1 decimal | Share of all delivered items sold by those same 100 sellers.
-Top 100 Sellers Delivered Share =
-VAR Top100 =
-    CALCULATETABLE (
-        TOPN ( 100, VALUES ( dim_seller[seller_id] ), [Late Items], DESC, dim_seller[seller_id], ASC ),
-        REMOVEFILTERS ( dim_seller )
-    )
-RETURN
-    DIVIDE (
-        CALCULATE ( [Delivered Items], REMOVEFILTERS ( dim_seller ), Top100 ),
-        CALCULATE ( [Delivered Items], REMOVEFILTERS ( dim_seller ) )
-    )
+// Folder: Suppliers | Format: Percentage, 1 decimal | Share of all delivered items sold by those same top sellers.
+Top Sellers Delivered Share =
+DIVIDE (
+    CALCULATE ( [Delivered Items], REMOVEFILTERS ( dim_seller ), dim_seller[is_top_late_seller] = TRUE () ),
+    CALCULATE ( [Delivered Items], REMOVEFILTERS ( dim_seller ) )
+)

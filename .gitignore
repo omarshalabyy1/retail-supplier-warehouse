@@ -1,6 +1,6 @@
 .env
-data/raw/*
-!data/raw/.gitkeep
+data/input/*.csv
+!data/input/departments.csv
 dbt/target/
 dbt/logs/
 dbt/.user.yml

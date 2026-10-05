@@ -1,40 +1,68 @@
-"""Load the raw CSV exports into the warehouse's raw schema, exactly as they are.
+"""Load the client's input files into the warehouse's raw schema.
 
-Every column lands as text; dbt's staging models do the cleaning. Each run replaces the raw
-tables inside one transaction, so running it twice gives the same result, and a failed run
-leaves yesterday's data in place. Every load is written to raw.load_log.
+Before the database is touched, every file in config/client.yaml `inputs` must exist with its required
+columns, and every product category must have a department; otherwise the run stops with one line.
+Only the required columns are loaded, as text (dbt's staging models do the cleaning; extra columns are
+ignored). Each run replaces the raw tables inside one transaction, so running it twice gives the same
+result and a failed run leaves yesterday's data in place. Every load is written to raw.load_log.
 
-    python load.py            # from the repo root, warehouse on localhost:5441
+    python load.py
 """
 import csv
-import os
-from pathlib import Path
+import io
 
 import psycopg
 
-RAW_DIR = Path(__file__).parent / "data" / "raw"
+from config import load_config
 
-# raw table name -> source file
-FILES = {
-    "orders": "olist_orders_dataset.csv",
-    "order_items": "olist_order_items_dataset.csv",
-    "products": "olist_products_dataset.csv",
-    "sellers": "olist_sellers_dataset.csv",
-    "customers": "olist_customers_dataset.csv",
-    "reviews": "olist_order_reviews_dataset.csv",
-    "category_translation": "product_category_name_translation.csv",
+# The template's input contract (data/input/README.md): input key -> required columns.
+COLUMNS = {
+    "orders": ["order_id", "customer_id", "order_status", "order_purchase_timestamp",
+               "order_delivered_customer_date", "order_estimated_delivery_date"],
+    "order_items": ["order_id", "order_item_id", "product_id", "seller_id", "price", "freight_value"],
+    "products": ["product_id", "product_category_name"],
+    "sellers": ["seller_id", "seller_zip_code_prefix", "seller_city", "seller_state"],
+    "customers": ["customer_id", "customer_unique_id", "customer_zip_code_prefix", "customer_city", "customer_state"],
+    "reviews": ["order_id", "review_score", "review_creation_date", "review_answer_timestamp"],
+    "departments": ["category_code", "department"],
 }
 
 
+def read_rows(path):
+    """Rows as dicts. utf-8-sig drops the byte-order mark some exports start with."""
+    f = open(path, encoding="utf-8-sig", newline="")
+    reader = csv.DictReader(f)
+    reader.fieldnames = [name.strip() for name in reader.fieldnames or []]
+    return f, reader
+
+
+def check_inputs(cfg):
+    files = {key: cfg["input_dir"] / cfg["inputs"][key] for key in COLUMNS}
+    for key, path in files.items():
+        if not path.exists():
+            raise SystemExit(f"missing input file data/input/{path.name} (inputs.{key} in config/client.yaml)")
+        f, reader = read_rows(path)
+        with f:
+            missing = [c for c in COLUMNS[key] if c not in reader.fieldnames]
+        if missing:
+            raise SystemExit(f"data/input/{path.name} is missing column(s): {', '.join(missing)}")
+
+    f, reader = read_rows(files["departments"])
+    with f:
+        mapped = {row["category_code"] for row in reader}
+    f, reader = read_rows(files["products"])
+    with f:
+        unmapped = sorted({row["product_category_name"] for row in reader if row["product_category_name"]} - mapped)
+    if unmapped:
+        raise SystemExit(f"data/input/{files['departments'].name} has no department for category code(s): {', '.join(unmapped)}")
+    return files
+
+
 def main():
-    conn = psycopg.connect(
-        host=os.environ.get("WAREHOUSE_HOST", "localhost"),
-        port=os.environ.get("WAREHOUSE_PORT", "5441"),
-        dbname="warehouse",
-        user="warehouse",
-        password=os.environ["WAREHOUSE_PASSWORD"],
-    )
-    with conn, conn.cursor() as cur:
+    cfg = load_config()
+    files = check_inputs(cfg)
+
+    with psycopg.connect(cfg["db_url"]) as conn, conn.cursor() as cur:
         cur.execute("CREATE SCHEMA IF NOT EXISTS raw")
         cur.execute("""
             CREATE TABLE IF NOT EXISTS raw.load_log (
@@ -43,25 +71,30 @@ def main():
                 rows_loaded integer,
                 loaded_at timestamptz DEFAULT now()
             )""")
-        for table, file_name in FILES.items():
-            path = RAW_DIR / file_name
-            # utf-8-sig drops the byte-order mark some exports start with (the category file does).
-            with open(path, encoding="utf-8-sig", newline="") as f:
-                header = next(csv.reader(f))
-            columns = ", ".join(f'"{c.strip()}" text' for c in header)
+        for key, path in files.items():
+            columns = COLUMNS[key]
             # DROP CASCADE also drops dbt's staging views; the next dbt run rebuilds them.
-            cur.execute(f"DROP TABLE IF EXISTS raw.{table} CASCADE")
-            cur.execute(f"CREATE TABLE raw.{table} ({columns})")
-            with open(path, "rb") as f, cur.copy(f"COPY raw.{table} FROM STDIN WITH (FORMAT csv, HEADER true)") as copy:
-                while data := f.read(1 << 20):
-                    copy.write(data)
-            cur.execute(f"SELECT count(*) FROM raw.{table}")
+            cur.execute(f"DROP TABLE IF EXISTS raw.{key} CASCADE")
+            cur.execute(f"CREATE TABLE raw.{key} ({', '.join(f'{c} text' for c in columns)})")
+            # Only the required columns, written back as CSV: an empty field stays NULL, as in the file.
+            f, reader = read_rows(path)
+            with f, cur.copy(f"COPY raw.{key} FROM STDIN (FORMAT csv)") as copy:
+                buffer = io.StringIO()
+                writer = csv.writer(buffer)
+                for row in reader:
+                    writer.writerow([row[c] for c in columns])
+                    if buffer.tell() > 1 << 20:
+                        copy.write(buffer.getvalue())
+                        buffer.seek(0)
+                        buffer.truncate()
+                copy.write(buffer.getvalue())
+            cur.execute(f"SELECT count(*) FROM raw.{key}")
             rows = cur.fetchone()[0]
             cur.execute(
                 "INSERT INTO raw.load_log (table_name, source_file, rows_loaded) VALUES (%s, %s, %s)",
-                (table, file_name, rows),
+                (key, path.name, rows),
             )
-            print(f"raw.{table}: {rows:,} rows from {file_name}")
+            print(f"raw.{key}: {rows:,} rows from {path.name}")
 
 
 if __name__ == "__main__":
