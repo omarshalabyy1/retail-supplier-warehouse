@@ -2,8 +2,6 @@
 
 **99,441 orders loaded and tested every morning: 100 of 3,095 sellers account for half of all late-delivered items.**
 
-New client? See [docs/new-client.md](docs/new-client.md).
-
 ## The problem
 
 An online store sells products from thousands of sellers, its suppliers. Orders, items, sellers, products and reviews come out as separate exports. Every report starts with a day of cleaning, every team gets a different total, and nobody can say which suppliers make customers wait.
