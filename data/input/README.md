@@ -79,4 +79,4 @@ Every `product_category_name` that appears in products, with the department the 
 
 ## The demo files
 
-`departments.csv` is committed. The other six are the Olist files from Kaggle (see Data in the main README); download them into this folder. They are not committed.
+`departments.csv` is committed. It is derived from the category translation file of the [Olist dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (CC BY-NC-SA 4.0); a client's private copy replaces it with their own mapping. The other six are the Olist files from Kaggle (see Data in the main README); download them into this folder. They are not committed.
