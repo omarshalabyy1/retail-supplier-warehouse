@@ -90,6 +90,18 @@ You need Docker Desktop, and Python 3.10+ for the notebook.
 
 ## 🏗️ For engineers
 
+Every table, the tables it is built from, and its row count after one run:
+
+![Data flow, table by table](docs/data-flow.svg)
+
+The star schema Power BI imports:
+
+![The star schema](docs/data-model.svg)
+
+The same lineage as dbt draws it (`dbt docs generate`, then `dbt docs serve`):
+
+![dbt lineage graph: 7 raw sources, 6 staging views, the fact and four dimensions](docs/dbt-lineage.png)
+
 | Decision | Why |
 |---|---|
 | Load the required columns as text, clean in SQL (ELT) | The raw layer holds the input values unchanged, so any number can be traced back and the cleaning can change without reloading |

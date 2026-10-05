@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 510" width="1000" height="510" role="img" aria-label="Data flow, table by table: 7 input files load into 7 raw tables (446,875 rows), 6 staging views clean them, and the star schema builds fact_order_items (112,650 rows) from order items, orders and reviews, plus four dimensions: date, customer, seller (ranked by late items from the fact) and product (with its department). Power BI imports the star schema into three pages.">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="0.55" stop-color="#10213A"/>
+      <stop offset="1" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#64748B"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Segoe UI", -apple-system, Helvetica, Arial, sans-serif; }
+    .title { font-size: 21px; font-weight: 700; fill: #FFFFFF; }
+    .sub { font-size: 13.5px; fill: #CBD5E1; }
+    .layer { font-size: 14px; font-weight: 700; fill: #0B1220; }
+    .where { font-size: 12px; fill: #94A3B8; }
+    .name { font-size: 13px; fill: #F1F5F9; }
+    .count { font-size: 11.5px; fill: #94A3B8; }
+    .col { font-size: 12.5px; fill: #E2E8F0; }
+    .key { font-size: 11px; font-weight: 700; }
+    .edge { fill: none; stroke: #64748B; stroke-width: 1.4; }
+  </style>
+  <rect width="1000" height="510" rx="22" fill="url(#bg)"/>
+  <text x="40" y="50" class="title">Data flow, table by table</text>
+  <text x="40" y="74" class="sub">Every table in the warehouse and the tables it is built from. load.py fills raw, dbt builds the rest.</text>
+  <rect x="30" y="96" width="140" height="26" rx="13" fill="#94A3B8"/><text x="100.0" y="114" class="layer" text-anchor="middle">Input files</text>
+  <text x="100.0" y="138" class="where" text-anchor="middle">data/input, CSV</text>
+  <rect x="205" y="96" width="170" height="26" rx="13" fill="#3B82F6"/><text x="290.0" y="114" class="layer" text-anchor="middle">1  Raw</text>
+  <text x="290.0" y="138" class="where" text-anchor="middle">schema raw, text</text>
+  <rect x="410" y="96" width="170" height="26" rx="13" fill="#0EA5E9"/><text x="495.0" y="114" class="layer" text-anchor="middle">2  Staging</text>
+  <text x="495.0" y="138" class="where" text-anchor="middle">schema staging, views</text>
+  <rect x="615" y="96" width="175" height="26" rx="13" fill="#14B8A6"/><text x="702.5" y="114" class="layer" text-anchor="middle">3  Star schema</text>
+  <text x="702.5" y="138" class="where" text-anchor="middle">schema marts, tables</text>
+  <rect x="825" y="96" width="145" height="26" rx="13" fill="#22C55E"/><text x="897.5" y="114" class="layer" text-anchor="middle">4  Power BI</text>
+  <text x="897.5" y="138" class="where" text-anchor="middle">import mode</text>
+  <rect x="30" y="150" width="140" height="308" rx="10" fill="#13233D" stroke="#94A3B8" stroke-opacity="0.7"/>
+  <text x="44" y="270" class="name" font-weight="700">7 CSV files</text>
+  <text x="44" y="290" class="count" style="fill:#CBD5E1;font-size:12.5px"></text>
+  <text x="44" y="310" class="count" style="fill:#CBD5E1;font-size:12.5px">6 store exports:</text>
+  <text x="44" y="330" class="count" style="fill:#CBD5E1;font-size:12.5px">orders, items,</text>
+  <text x="44" y="350" class="count" style="fill:#CBD5E1;font-size:12.5px">reviews, customers,</text>
+  <text x="44" y="370" class="count" style="fill:#CBD5E1;font-size:12.5px">sellers, products</text>
+  <text x="44" y="390" class="count" style="fill:#CBD5E1;font-size:12.5px"></text>
+  <text x="44" y="410" class="count" style="fill:#CBD5E1;font-size:12.5px">+ departments.csv</text>
+  <line x1="170" y1="166.0" x2="203" y2="166.0" class="edge" marker-end="url(#arrow)"/>
+  <line x1="170" y1="212.0" x2="203" y2="212.0" class="edge" marker-end="url(#arrow)"/>
+  <line x1="170" y1="258.0" x2="203" y2="258.0" class="edge" marker-end="url(#arrow)"/>
+  <line x1="170" y1="304.0" x2="203" y2="304.0" class="edge" marker-end="url(#arrow)"/>
+  <line x1="170" y1="350.0" x2="203" y2="350.0" class="edge" marker-end="url(#arrow)"/>
+  <line x1="170" y1="396.0" x2="203" y2="396.0" class="edge" marker-end="url(#arrow)"/>
+  <line x1="170" y1="442.0" x2="203" y2="442.0" class="edge" marker-end="url(#arrow)"/>
+  <rect x="205" y="150" width="170" height="32" rx="7" fill="#13233D" stroke="#3B82F6" stroke-opacity="0.7"/><text x="215" y="171" class="name">orders</text><text x="367" y="171" class="count" text-anchor="end">99,441</text>
+  <rect x="205" y="196" width="170" height="32" rx="7" fill="#13233D" stroke="#3B82F6" stroke-opacity="0.7"/><text x="215" y="217" class="name">order_items</text><text x="367" y="217" class="count" text-anchor="end">112,650</text>
+  <rect x="205" y="242" width="170" height="32" rx="7" fill="#13233D" stroke="#3B82F6" stroke-opacity="0.7"/><text x="215" y="263" class="name">reviews</text><text x="367" y="263" class="count" text-anchor="end">99,224</text>
+  <rect x="205" y="288" width="170" height="32" rx="7" fill="#13233D" stroke="#3B82F6" stroke-opacity="0.7"/><text x="215" y="309" class="name">customers</text><text x="367" y="309" class="count" text-anchor="end">99,441</text>
+  <rect x="205" y="334" width="170" height="32" rx="7" fill="#13233D" stroke="#3B82F6" stroke-opacity="0.7"/><text x="215" y="355" class="name">sellers</text><text x="367" y="355" class="count" text-anchor="end">3,095</text>
+  <rect x="205" y="380" width="170" height="32" rx="7" fill="#13233D" stroke="#3B82F6" stroke-opacity="0.7"/><text x="215" y="401" class="name">products</text><text x="367" y="401" class="count" text-anchor="end">32,951</text>
+  <rect x="205" y="426" width="170" height="32" rx="7" fill="#13233D" stroke="#3B82F6" stroke-opacity="0.7"/><text x="215" y="447" class="name">departments</text><text x="367" y="447" class="count" text-anchor="end">73</text>
+  <rect x="410" y="150" width="170" height="32" rx="7" fill="#13233D" stroke="#0EA5E9" stroke-opacity="0.7"/><text x="420" y="171" class="name">stg_orders</text><text x="572" y="171" class="count" text-anchor="end">99,441</text>
+  <rect x="410" y="196" width="170" height="32" rx="7" fill="#13233D" stroke="#0EA5E9" stroke-opacity="0.7"/><text x="420" y="217" class="name">stg_order_items</text><text x="572" y="217" class="count" text-anchor="end">112,650</text>
+  <rect x="410" y="242" width="170" height="32" rx="7" fill="#13233D" stroke="#0EA5E9" stroke-opacity="0.7"/><text x="420" y="263" class="name">stg_reviews</text><text x="572" y="263" class="count" text-anchor="end">98,673</text>
+  <rect x="410" y="288" width="170" height="32" rx="7" fill="#13233D" stroke="#0EA5E9" stroke-opacity="0.7"/><text x="420" y="309" class="name">stg_customers</text><text x="572" y="309" class="count" text-anchor="end">99,441</text>
+  <rect x="410" y="334" width="170" height="32" rx="7" fill="#13233D" stroke="#0EA5E9" stroke-opacity="0.7"/><text x="420" y="355" class="name">stg_sellers</text><text x="572" y="355" class="count" text-anchor="end">3,095</text>
+  <rect x="410" y="403.0" width="170" height="32" rx="7" fill="#13233D" stroke="#0EA5E9" stroke-opacity="0.7"/><text x="420" y="424.0" class="name">stg_products</text><text x="572" y="424.0" class="count" text-anchor="end">32,951</text>
+  <rect x="615" y="150" width="175" height="32" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.7"/><text x="625" y="171" class="name">dim_date</text><text x="782" y="171" class="count" text-anchor="end">1,096</text>
+  <rect x="615" y="219.0" width="175" height="32" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.7"/><text x="625" y="240.0" class="name">fact_order_items</text><text x="782" y="240.0" class="count" text-anchor="end">112,650</text>
+  <rect x="615" y="288" width="175" height="32" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.7"/><text x="625" y="309" class="name">dim_customer</text><text x="782" y="309" class="count" text-anchor="end">99,441</text>
+  <rect x="615" y="334" width="175" height="32" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.7"/><text x="625" y="355" class="name">dim_seller</text><text x="782" y="355" class="count" text-anchor="end">3,095</text>
+  <rect x="615" y="403.0" width="175" height="32" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.7"/><text x="625" y="424.0" class="name">dim_product</text><text x="782" y="424.0" class="count" text-anchor="end">32,951</text>
+  <path d="M375 166.0 C392.5 166.0 392.5 166.0 408 166.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M375 212.0 C392.5 212.0 392.5 212.0 408 212.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M375 258.0 C392.5 258.0 392.5 258.0 408 258.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M375 304.0 C392.5 304.0 392.5 304.0 408 304.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M375 350.0 C392.5 350.0 392.5 350.0 408 350.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M375 396.0 C392.5 396.0 392.5 419.0 408 419.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M375 442.0 C392.5 442.0 392.5 419.0 408 419.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M580 166.0 C597.5 166.0 597.5 166.0 613 166.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M580 166.0 C597.5 166.0 597.5 235.0 613 235.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M580 212.0 C597.5 212.0 597.5 235.0 613 235.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M580 258.0 C597.5 258.0 597.5 235.0 613 235.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M580 304.0 C597.5 304.0 597.5 304.0 613 304.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M580 350.0 C597.5 350.0 597.5 350.0 613 350.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M580 419.0 C597.5 419.0 597.5 419.0 613 419.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M790 235.0 C806 235.0 806 350.0 792 350.0" class="edge" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  <text x="612" y="450" class="where">dashed: dim_seller ranks sellers by late items in the fact</text>
+  <path d="M800 150 H812 V435.0 H800" class="edge" stroke="#14B8A6"/>
+  <line x1="812" y1="292.5" x2="830" y2="292.5" class="edge" stroke="#22C55E" marker-end="url(#arrow)"/>
+  <rect x="832" y="210.5" width="138" height="164" rx="12" fill="#13233D" stroke="#22C55E" stroke-opacity="0.7"/>
+  <rect x="843" y="226.5" width="116" height="32" rx="16" fill="#166534"/><text x="901" y="247.5" class="name" text-anchor="middle">Sales</text>
+  <rect x="843" y="272.5" width="116" height="32" rx="16" fill="#166534"/><text x="901" y="293.5" class="name" text-anchor="middle">Suppliers</text>
+  <rect x="843" y="318.5" width="116" height="32" rx="16" fill="#166534"/><text x="901" y="339.5" class="name" text-anchor="middle">Late deliveries</text>
+</svg>
