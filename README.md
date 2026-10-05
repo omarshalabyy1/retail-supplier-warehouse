@@ -1,12 +1,23 @@
-# Retail supplier warehouse
+<p align="center">
+  <img width="100%" src="docs/header.svg" alt="Retail supplier warehouse: 99,441 orders loaded and tested every morning. 100 of 3,095 sellers account for half of all late-delivered items.">
+</p>
 
-**99,441 orders loaded and tested every morning: 100 of 3,095 sellers account for half of all late-delivered items.**
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.10-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.10">
+  <img src="https://img.shields.io/badge/Apache_Airflow-3-017CEE?style=for-the-badge&logo=apacheairflow&logoColor=white" alt="Apache Airflow 3">
+  <img src="https://img.shields.io/badge/dbt-1.10-FF694B?style=for-the-badge&logo=dbt&logoColor=white" alt="dbt 1.10">
+  <img src="https://img.shields.io/badge/PostgreSQL-17-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL 17">
+  <img src="https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker Compose">
+  <img src="https://img.shields.io/badge/Power_BI-Report-F2C811?style=for-the-badge&logo=powerbi&logoColor=black" alt="Power BI">
+</p>
+
+<h3 align="center">99,441 orders loaded and tested every morning:<br>100 of 3,095 sellers account for half of all late-delivered items.</h3>
 
 ## The problem
 
 An online store sells products from thousands of sellers, its suppliers. Orders, items, sellers, products and reviews come out as separate exports. Every report starts with a day of cleaning, every team gets a different total, and nobody can say which suppliers make customers wait.
 
-## The solution
+## 🛠️ The solution
 
 A warehouse that rebuilds itself every morning. The input files are checked and load as they are, SQL cleans them, a star schema answers the questions, data tests check every load, and a Power BI report reads the result.
 
@@ -16,7 +27,7 @@ The mental model is four layers. Each one only reads the layer below it, so a mi
 
 ![One warehouse, four layers](docs/layers.svg)
 
-## The result
+## 📈 The result
 
 - **99,441 orders** (112,650 order items) load every morning, and **31 data tests** pass on every run: keys, missing values, links between tables, and totals that must equal the raw file to the cent.
 - **6.8% of delivered orders arrive late** (6,534 of 96,470).
@@ -37,13 +48,13 @@ Every number above is computed in [`analysis/analysis.ipynb`](analysis/analysis.
 | Seller share of late items | Late items of the 100 sellers with the most late items (`dim_seller.is_top_late_seller`, ties broken by seller id), over all late items. Counted per item, because one order can hold items from several sellers |
 | Average review | Each reviewed order counted once; when an order was reviewed twice, the latest review |
 
-## Power BI report
+## 📊 Power BI report
 
 Three pages: **Sales**, **Suppliers** and **Late deliveries**. The [`powerbi/`](powerbi/) folder builds it from nothing, step by step, and lists the numbers each page must show.
 
 *Screenshots are added here once the report is built.*
 
-## How to run it
+## ▶️ How to run it
 
 You need Docker Desktop, and Python 3.10+ for the notebook.
 
@@ -64,7 +75,7 @@ You need Docker Desktop, and Python 3.10+ for the notebook.
    ```
 6. Build the report with [`powerbi/README.md`](powerbi/README.md).
 
-## For engineers
+## 🏗️ For engineers
 
 | Decision | Why |
 |---|---|
@@ -89,6 +100,6 @@ powerbi/                 the report, step by step
 
 Stack: PostgreSQL 17, Python, dbt Core, Apache Airflow 3, Docker Compose, Power BI Desktop.
 
-## Data
+## 🗂️ Data
 
 The [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) on Kaggle (CC BY-NC-SA 4.0): about 100,000 orders placed from 2016 to 2018. Its sellers stand in for the store's suppliers and its product categories for departments. Amounts are in Brazilian reais. The files are not in this repo (the licence is non-commercial); download them from Kaggle into `data/input/`. `data/input/departments.csv`, the category-to-department mapping, is committed: it is derived from the dataset's category translation file (CC BY-NC-SA 4.0, same Kaggle link); a client's private copy replaces it with their own mapping.
