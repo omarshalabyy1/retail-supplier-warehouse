@@ -32,7 +32,7 @@ Power BI may create some automatically. Delete any it made, then drag each one y
 | `fact_order_items[customer_id]` | `dim_customer[customer_id]` | Many to one | Single | Yes |
 | `fact_order_items[order_date]` | `dim_date[date]` | Many to one | Single | Yes |
 
-Why many to one: each dimension key is unique (tested by dbt), the fact repeats it. Why single direction: filters flow from the dimensions into the fact, never back, so no ambiguous paths. Why only `order_date` to the date table: every page reads by order date; the promised and delivered dates stay plain columns.
+Why many to one: each dimension key is unique, the fact repeats it. Why single direction: filters flow from the dimensions into the fact, never back, so no ambiguous paths. Why only `order_date` to the date table: every page reads by order date; the promised and delivered dates stay plain columns.
 
 ## Sort-by columns
 

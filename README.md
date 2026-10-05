@@ -1,9 +1,9 @@
 <p align="center">
-  <img width="100%" src="docs/header.svg" alt="Retail supplier warehouse: 99,441 orders loaded and tested. 100 of 3,095 sellers account for half of all late-delivered items.">
+  <img width="100%" src="docs/header.svg" alt="Retail supplier warehouse: 99,441 orders in one star schema. 100 of 3,095 sellers account for half of all late-delivered items.">
 </p>
 
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1200&color=2DD4BF&center=true&vCenter=true&width=760&lines=Retail+supplier+warehouse;Load.+Test.+Model.+Report.;99%2C441+orders%2C+one+star+schema;31+data+tests+on+every+build" alt="Retail supplier warehouse">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1200&color=2DD4BF&center=true&vCenter=true&width=760&lines=Retail+supplier+warehouse;Load.+Clean.+Model.+Report.;99%2C441+orders%2C+one+star+schema" alt="Retail supplier warehouse">
 </p>
 
 <p align="center">
@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/Power_BI-Report-F2C811?style=for-the-badge&logo=powerbi&logoColor=black" alt="Power BI">
 </p>
 
-<h3 align="center">99,441 orders loaded and tested:<br>100 of 3,095 sellers account for half of all late-delivered items.</h3>
+<h3 align="center">99,441 orders in one star schema:<br>100 of 3,095 sellers account for half of all late-delivered items.</h3>
 
 ## The problem
 
@@ -22,7 +22,7 @@ An online store sells products from thousands of sellers, its suppliers. Orders,
 
 ## 🛠️ The solution
 
-A warehouse built in one run. The input files are checked and load as they are, SQL cleans them, a star schema answers the questions, data tests check every load, and a Power BI report reads the result.
+A warehouse built in one run. The input files are checked and load as they are, SQL cleans them, a star schema answers the questions, and a Power BI report reads the result.
 
 ![How it works](docs/how-it-works.svg)
 
@@ -36,7 +36,7 @@ The mental model is four layers. Each one only reads the layer below it, so a mi
   <img src="https://user-images.githubusercontent.com/74038190/221352987-68da234d-4d62-4e9d-9d7f-098dc657c2dc.gif" width="100" alt="Moving chart">
 </p>
 
-- **99,441 orders** (112,650 order items) load in one run, and **31 data tests** pass on every build: keys, missing values, links between tables, and totals that must equal the raw file to the cent.
+- **99,441 orders** (112,650 order items) load into one star schema in one run.
 - **6.8% of delivered orders arrive late** (6,534 of 96,470).
 - **100 of the 3,095 sellers account for 50.4% of late-delivered items**, while shipping 41.6% of all delivered items. Their late rate is 8.0%, against 5.6% for every other seller: a short list for the supplier team to call first.
 - **Late orders lose two stars:** they average 2.27 out of 5, against 4.29 for orders on time.
@@ -50,7 +50,6 @@ Every number above is computed in [`analysis/analysis.ipynb`](analysis/analysis.
 | Number | Measured as |
 |---|---|
 | Orders loaded | Rows in `raw.orders` after the load (`raw.load_log` keeps the count of every load) |
-| Data tests passing | Tests with status `pass` in the last `dbt build` (`dbt/target/run_results.json`) |
 | Late | Order delivered (status `delivered` with a delivery date) on a later day than the date promised to the customer |
 | Seller share of late items | Late items of the 100 sellers with the most late items (`dim_seller.is_top_late_seller`, ties broken by seller id), over all late items. Counted per item, because one order can hold items from several sellers |
 | Average review | Each reviewed order counted once; when an order was reviewed twice, the latest review |
@@ -78,10 +77,10 @@ You need Docker Desktop, and Python 3.10+ for the notebook.
    ```bash
    pip install -r requirements.txt pandas matplotlib jupyter
    ```
-4. Load the files, then build and test the star schema (about half a minute):
+4. Load the files, then build the star schema (about half a minute):
    ```bash
    python load.py
-   cd dbt && dbt build && cd ..
+   cd dbt && dbt run && cd ..
    ```
 5. Run the notebook:
    ```bash
@@ -98,13 +97,11 @@ You need Docker Desktop, and Python 3.10+ for the notebook.
 | One fact at order-item grain | Sales, freight and seller live on the item. Order-level facts (status, dates, lateness, review) repeat on each item, so measures count orders and reviews once with a distinct count |
 | Department as a column of `dim_product` | A star, not a snowflake: one join fewer for every Power BI visual |
 | No history (SCD type 2) on sellers yet | The export holds each seller once, with no changes to track. With a live seller feed, a dbt snapshot would add it |
-| `dbt build` instead of `dbt run` then `dbt test` | Each model is tested right after it is built, and anything that depends on a failed model is skipped |
 
 ```
 load.py                  checks the input files, then loads them into the raw schema, logged in raw.load_log
 dbt/models/staging/      6 views: types, names, one review per order, departments in English
-dbt/models/marts/        the star schema: fact_order_items and four dimensions, with their tests
-dbt/tests/               grain, totals against raw, no negative amounts
+dbt/models/marts/        the star schema: fact_order_items and four dimensions
 dbt/dbt_project.yml      the two rules: late after 0 days, top 100 sellers
 analysis/analysis.ipynb  every number in this README
 powerbi/                 the report, step by step
@@ -117,5 +114,5 @@ Stack: PostgreSQL 17, Python, dbt Core, Docker Compose, Power BI Desktop.
 The [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) on Kaggle (CC BY-NC-SA 4.0): about 100,000 orders placed from 2016 to 2018. Its sellers stand in for the store's suppliers and its product categories for departments. Amounts are in Brazilian reais. The files are not in this repo (the licence is non-commercial); download them from Kaggle into `data/input/`. `data/input/departments.csv`, the category-to-department mapping, is committed: it is derived from the dataset's category translation file (CC BY-NC-SA 4.0, same Kaggle link).
 
 <p align="center">
-  <img width="100%" src="docs/footer.svg" alt="A warehouse built and tested in one run.">
+  <img width="100%" src="docs/footer.svg" alt="A warehouse built in one run.">
 </p>

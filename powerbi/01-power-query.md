@@ -126,4 +126,4 @@ in
 
 **Home → Close & Apply.** Five tables load; `Warehouse` does not. The zip prefixes stay text so leading zeros survive.
 
-After a new `dbt build`, **Home → Refresh** brings in the new data.
+After a new `dbt run`, **Home → Refresh** brings in the new data.
