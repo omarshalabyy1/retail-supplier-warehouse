@@ -1,9 +1,9 @@
 # Input files
 
-The seven files the client supplies, as CSV with a header row, UTF-8. The file names are set in `config/client.yaml` under `inputs`.
-Extra columns are ignored and only the columns below are loaded. Before the database is touched, `python load.py` (the `load_raw` task) stops with a one-line message if a file is missing, a required column is not there, or a product category has no department.
+The seven input files, as CSV with a header row, UTF-8. The file names are set in `FILES` in `load.py`.
+Extra columns are ignored and only the columns below are loaded. Before the database is touched, `python load.py` stops with a one-line message if a file is missing, a required column is not there, or a product category has no department.
 
-## orders (`inputs.orders`)
+## orders
 
 One row per order.
 
@@ -16,7 +16,7 @@ One row per order.
 | order_delivered_customer_date | timestamp, empty until delivered | 2017-10-10 21:25:13 |
 | order_estimated_delivery_date | date (or timestamp) promised to the customer | 2017-10-18 00:00:00 |
 
-## order_items (`inputs.order_items`)
+## order_items
 
 One row per item in an order.
 
@@ -29,14 +29,14 @@ One row per item in an order.
 | price | decimal, not negative | 58.90 |
 | freight_value | decimal, not negative | 13.29 |
 
-## products (`inputs.products`)
+## products
 
 | Column | Type | Example |
 |---|---|---|
 | product_id | text, unique | 1e9e8ef04dbcff4541ed26657ea517e5 |
 | product_category_name | text, in departments; empty = department "unknown" | perfumaria |
 
-## sellers (`inputs.sellers`)
+## sellers
 
 The store's suppliers.
 
@@ -47,7 +47,7 @@ The store's suppliers.
 | seller_city | text | campinas |
 | seller_state | text | SP |
 
-## customers (`inputs.customers`)
+## customers
 
 | Column | Type | Example |
 |---|---|---|
@@ -57,7 +57,7 @@ The store's suppliers.
 | customer_city | text | franca |
 | customer_state | text | SP |
 
-## reviews (`inputs.reviews`)
+## reviews
 
 One row per review; an order reviewed twice keeps its latest review.
 
@@ -68,7 +68,7 @@ One row per review; an order reviewed twice keeps its latest review.
 | review_creation_date | timestamp | 2018-01-18 00:00:00 |
 | review_answer_timestamp | timestamp (breaks ties between two reviews on the same day) | 2018-01-18 21:46:59 |
 
-## departments (`inputs.departments`)
+## departments
 
 Every `product_category_name` that appears in products, with the department the report shows.
 
@@ -79,4 +79,4 @@ Every `product_category_name` that appears in products, with the department the 
 
 ## The demo files
 
-`departments.csv` is committed. It is derived from the category translation file of the [Olist dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (CC BY-NC-SA 4.0); a client's private copy replaces it with their own mapping. The other six are the Olist files from Kaggle (see Data in the main README); download them into this folder. They are not committed.
+`departments.csv` is committed. It is derived from the category translation file of the [Olist dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (CC BY-NC-SA 4.0). The other six are the Olist files from Kaggle (see Data in the main README); download them into this folder. They are not committed.

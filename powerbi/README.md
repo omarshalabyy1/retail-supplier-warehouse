@@ -14,7 +14,7 @@ Built in Power BI Desktop (free) on the warehouse's `marts` schema, by copying a
 
 Follow [`08-build-checklist.md`](08-build-checklist.md): it walks through the files below step by step, with the numbers to check at each stop.
 
-1. Start the stack and run the `retail_warehouse` DAG once (see the main README).
+1. Start the warehouse, then load and build it once (see the main README).
 2. [`01-power-query.md`](01-power-query.md): connect and load the five tables.
 3. [`02-model.md`](02-model.md): date table, relationships, column formats, sort-by columns, hidden columns.
 4. [`03-measures.dax`](03-measures.dax): the 18 measures, with folder, format and the pages that use them.

@@ -1,7 +1,7 @@
 -- Grain: one row per item in an order (order_id, order_item_id).
 -- Order-level facts (status, dates, lateness, review) repeat on each item of the order.
--- is_late: delivered more than var('late_after_days') days after the promised date (rules.late_after_days
--- in config/client.yaml); null while the order is not delivered. Status 'delivered' marks a delivered order.
+-- is_late: delivered more than var('late_after_days') days (dbt_project.yml) after the promised date;
+-- null while the order is not delivered. Status 'delivered' marks a delivered order.
 select
     i.order_id,
     i.order_item_id,

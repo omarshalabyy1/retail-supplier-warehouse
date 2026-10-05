@@ -1,6 +1,6 @@
 // 3. Measures. Create each one on the Measures table: Table tools -> New measure, paste, Enter.
 // The comment above each measure gives its display folder and format.
-// Amounts are in the client's currency (client.currency in config/client.yaml). No calculated columns or tables: everything else comes from the warehouse.
+// Amounts are in Brazilian reais (BRL). No calculated columns or tables: everything else comes from the warehouse.
 //
 // Format in Measure tools -> Format, or type the format string:
 //   Whole number, thousands separator = #,0      Decimal, 2 decimals = #,0.00

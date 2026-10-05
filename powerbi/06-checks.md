@@ -36,7 +36,7 @@ from marts.fact_order_items group by 1 order by 1;
 | Top sellers delivered share card | 41.6% | |
 | Table, first row | seller 4a3ca9315b744ce9f8e9374361493884: 1,949 delivered, 189 late, 9.7% | Table sorted by `Late Items` descending |
 | Table, second row | seller 1f50f920176fa81dab994f9023523100: 1,926 delivered, 150 late, 7.8% | |
-| State bar chart, top bar (`report.min_state_items` = 500) | SP, 7.1% (5,585 late of 78,598 delivered items) | Visual filter `Delivered Items` ≥ 500; sort by `Late Item Rate` descending |
+| State bar chart, top bar (at least 500 delivered items) | SP, 7.1% (5,585 late of 78,598 delivered items) | Visual filter `Delivered Items` ≥ 500; sort by `Late Item Rate` descending |
 | Click a state in the bar chart | the two top-seller cards stay at 50.4% and 41.6% | Both measures use `REMOVEFILTERS ( dim_seller )` |
 
 ```sql

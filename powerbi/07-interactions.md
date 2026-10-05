@@ -40,7 +40,7 @@ The year slicer (Px-S) and the text box (Px-T) keep the defaults: the slicer fil
 |---|---|
 | Report (all pages) | None |
 | Page | None on all three pages |
-| Visual | P1-V6: `department` Top 10 by `Sales` · P2-V6: `Delivered Items` ≥ `report.min_state_items` (demo: 500) · P3-V5: `is_delivered` is True · P3-V7: `department` Top 10 by `Delivered Items` |
+| Visual | P1-V6: `department` Top 10 by `Sales` · P2-V6: `Delivered Items` ≥ 500 · P3-V5: `is_delivered` is True · P3-V7: `department` Top 10 by `Delivered Items` |
 
 ## Not used
 

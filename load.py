@@ -1,21 +1,34 @@
-"""Load the client's input files into the warehouse's raw schema.
+"""Load the input files in data/input/ into the warehouse's raw schema.
 
-Before the database is touched, every file in config/client.yaml `inputs` must exist with its required
-columns, and every product category must have a department; otherwise the run stops with one line.
-Only the required columns are loaded, as text (dbt's staging models do the cleaning; extra columns are
-ignored). Each run replaces the raw tables inside one transaction, so running it twice gives the same
-result and a failed run leaves yesterday's data in place. Every load is written to raw.load_log.
+Before the database is touched, every file must exist with its required columns, and every product
+category must have a department; otherwise the run stops with one line. Only the required columns are
+loaded, as text (dbt's staging models do the cleaning; extra columns are ignored). Each run replaces the
+raw tables inside one transaction, so running it twice gives the same result. Every load is written to
+raw.load_log.
 
     python load.py
 """
 import csv
 import io
+from pathlib import Path
 
 import psycopg
 
-from config import load_config
+DB_URL = "postgresql://warehouse:warehouse@127.0.0.1:5441/warehouse"
+INPUT_DIR = Path(__file__).parent / "data" / "input"
 
-# The template's input contract (data/input/README.md): input key -> required columns.
+# Input files (data/input/README.md): raw table -> file name.
+FILES = {
+    "orders": "olist_orders_dataset.csv",
+    "order_items": "olist_order_items_dataset.csv",
+    "products": "olist_products_dataset.csv",
+    "sellers": "olist_sellers_dataset.csv",
+    "customers": "olist_customers_dataset.csv",
+    "reviews": "olist_order_reviews_dataset.csv",
+    "departments": "departments.csv",
+}
+
+# Raw table -> required columns.
 COLUMNS = {
     "orders": ["order_id", "customer_id", "order_status", "order_purchase_timestamp",
                "order_delivered_customer_date", "order_estimated_delivery_date"],
@@ -36,11 +49,11 @@ def read_rows(path):
     return f, reader
 
 
-def check_inputs(cfg):
-    files = {key: cfg["input_dir"] / cfg["inputs"][key] for key in COLUMNS}
+def check_inputs():
+    files = {key: INPUT_DIR / name for key, name in FILES.items()}
     for key, path in files.items():
         if not path.exists():
-            raise SystemExit(f"missing input file data/input/{path.name} (inputs.{key} in config/client.yaml)")
+            raise SystemExit(f"missing input file data/input/{path.name}")
         f, reader = read_rows(path)
         with f:
             missing = [c for c in COLUMNS[key] if c not in reader.fieldnames]
@@ -59,10 +72,9 @@ def check_inputs(cfg):
 
 
 def main():
-    cfg = load_config()
-    files = check_inputs(cfg)
+    files = check_inputs()
 
-    with psycopg.connect(cfg["db_url"]) as conn, conn.cursor() as cur:
+    with psycopg.connect(DB_URL) as conn, conn.cursor() as cur:
         cur.execute("CREATE SCHEMA IF NOT EXISTS raw")
         cur.execute("""
             CREATE TABLE IF NOT EXISTS raw.load_log (

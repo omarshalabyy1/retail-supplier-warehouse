@@ -1,4 +1,4 @@
--- One row per item in an order. Amounts in the client's currency (client.currency in config/client.yaml).
+-- One row per item in an order. Amounts in Brazilian reais (BRL).
 select
     order_id,
     order_item_id::int                as order_item_id,

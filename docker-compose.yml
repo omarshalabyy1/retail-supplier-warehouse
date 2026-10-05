@@ -1,56 +1,21 @@
-# The warehouse (Postgres) and Airflow. Both listen on 127.0.0.1 only.
+# The warehouse (Postgres), on 127.0.0.1 only.
 #
-#   docker compose up -d --build   # Airflow http://127.0.0.1:8091, warehouse localhost:5441
-#   docker compose down            # stops everything; the data volumes stay
+#   docker compose up -d     # warehouse on localhost:5441
+#   docker compose down -v   # stops it and deletes the data
 
 name: retail-supplier-warehouse
 
 services:
   warehouse:
     image: postgres:17
-    restart: unless-stopped
     environment:
       POSTGRES_USER: warehouse
-      POSTGRES_PASSWORD: ${DB_PASSWORD:?set in .env}
+      POSTGRES_PASSWORD: warehouse
       POSTGRES_DB: warehouse
     ports:
       - "127.0.0.1:5441:5432"
     volumes:
       - warehouse-data:/var/lib/postgresql/data
-      - ./sql/airflow-db.sql:/docker-entrypoint-initdb.d/airflow-db.sql:ro
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U warehouse -d warehouse"]
-      interval: 5s
-      timeout: 5s
-      retries: 20
-
-  airflow:
-    build: .
-    image: retail-supplier-warehouse:3.3.2
-    # Scheduler, DAG processor and API server in one container. If one of them stops,
-    # the container exits and Docker restarts it.
-    command: >-
-      bash -c "airflow db migrate && { airflow scheduler & airflow dag-processor & airflow api-server --port 8080 & wait -n; exit 1; }"
-    restart: unless-stopped
-    environment:
-      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
-      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_ALL_ADMINS: "true"
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://warehouse:${DB_PASSWORD}@warehouse:5432/airflow
-      # config.py: inside the Docker network the warehouse is "warehouse" on its own port 5432.
-      WAREHOUSE_HOST: warehouse
-      WAREHOUSE_PORT: "5432"
-      DB_PASSWORD: ${DB_PASSWORD}
-      DBT_PROFILES_DIR: /opt/project/dbt
-    ports:
-      - "127.0.0.1:8091:8080"
-    volumes:
-      - airflow-home:/opt/airflow
-      - ./dags:/opt/airflow/dags
-      - .:/opt/project
-    depends_on:
-      warehouse:
-        condition: service_healthy
 
 volumes:
   warehouse-data:
-  airflow-home:

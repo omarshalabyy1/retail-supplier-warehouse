@@ -2,20 +2,20 @@
 
 Five queries read the five tables of the `marts` schema. One extra query, `Warehouse`, holds the connection, so the server name is typed once.
 
-**Before you start:** the stack is running (`docker compose up -d`) and the `retail_warehouse` DAG has run once, so the `marts` tables exist.
+**Before you start:** the warehouse is running (`docker compose up -d`) and has been loaded and built once (main README), so the `marts` tables exist.
 
 ## Connect
 
 1. Power BI Desktop → **Home → Get data → Blank query**. The Power Query editor opens.
 2. **Home → Advanced Editor**, paste the query, **Done**.
 3. Rename the query (right pane, **Name**) to the name in the heading.
-4. The first time, Power BI asks for credentials: choose **Database**, user `warehouse`, password from your `.env` file. If it says it can't connect with encryption, choose **OK** to connect without it (the database only listens on your own computer).
+4. The first time, Power BI asks for credentials: choose **Database**, user `warehouse`, password `warehouse`. If it says it can't connect with encryption, choose **OK** to connect without it (the database only listens on your own computer).
 
 Repeat steps 1 to 3 for each query below.
 
 ## Warehouse (staging only, not loaded)
 
-The server, database and user are the `warehouse` values in `config/client.yaml`; the code below has the demo values (`127.0.0.1:5441`, `warehouse`). For a client, change them in this query only. Credentials: user = `warehouse.user`, password = `DB_PASSWORD` in `.env`.
+The warehouse from `docker-compose.yml`: server `127.0.0.1:5441`, database `warehouse`. Credentials: user `warehouse`, password `warehouse`.
 
 ```m
 let
@@ -126,4 +126,4 @@ in
 
 **Home → Close & Apply.** Five tables load; `Warehouse` does not. The zip prefixes stay text so leading zeros survive.
 
-Each morning, after the 6am run, **Home → Refresh** brings in the new data.
+After a new `dbt build`, **Home → Refresh** brings in the new data.

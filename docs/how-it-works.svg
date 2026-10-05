@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 250" width="1000" height="250" role="img" aria-label="How it works, every morning at 6am: 1 Collect the raw exports, 2 Clean them in staging, 3 Model a star schema, 4 Test keys, nulls and totals, 5 Report in Power BI.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 250" width="1000" height="250" role="img" aria-label="How it works, in one run: 1 Collect the raw exports, 2 Clean them in staging, 3 Model a star schema, 4 Test keys, nulls and totals, 5 Report in Power BI.">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0B1220"/>
@@ -21,7 +21,7 @@
 
   <rect width="1000" height="250" rx="22" fill="url(#bg)"/>
   <text x="40" y="50" class="title">How it works</text>
-  <text x="40" y="74" class="sub">Every morning at 6am, Airflow runs the steps in order. A failed test turns the run red and skips what depends on it.</text>
+  <text x="40" y="74" class="sub">One command loads the files, then dbt builds and tests each layer in order. A failed test skips what depends on it.</text>
 
   <!-- five boxes, 168 wide, 24 gap, from x=40 -->
   <g>

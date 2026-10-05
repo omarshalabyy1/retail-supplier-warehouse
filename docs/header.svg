@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 240" width="1000" height="240" role="img" aria-label="Retail supplier warehouse. 99,441 orders loaded and tested every morning: 100 of 3,095 sellers account for half of all late-delivered items. Bars show the 100 sellers' share of late items against their share of delivered items.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 240" width="1000" height="240" role="img" aria-label="Retail supplier warehouse. 99,441 orders loaded and tested: 100 of 3,095 sellers account for half of all late-delivered items. Bars show the 100 sellers' share of late items against their share of delivered items.">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0B1220"/>
@@ -34,7 +34,7 @@
 
   <text x="50" y="62" class="eyebrow">PROJECT · RETAIL DATA WAREHOUSE</text>
   <text x="50" y="104" class="title">Retail supplier warehouse</text>
-  <text x="50" y="136" class="result">99,441 orders loaded and tested every morning:</text>
+  <text x="50" y="136" class="result">99,441 orders loaded and tested:</text>
   <text x="50" y="157" class="result">100 of 3,095 sellers account for half of all late-delivered items.</text>
 
   <rect x="50" y="180" width="150" height="30" rx="15" fill="#FFFFFF" fill-opacity="0.08"/>

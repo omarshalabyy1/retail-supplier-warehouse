@@ -1,6 +1,6 @@
 -- One row per seller: the suppliers that sell through the store.
 -- late_rank orders sellers by their late items over all time (ties broken by seller_id); the first
--- var('top_sellers') of them (rules.top_sellers in config/client.yaml) are the "top sellers" of the report.
+-- var('top_sellers') of them (dbt_project.yml) are the "top sellers" of the report.
 -- A dimension attribute derived from the fact, so the notebook, the SQL checks and Power BI share one ranking.
 with late as (
     select seller_id, count(*) filter (where is_late) as late_items
