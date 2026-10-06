@@ -5,8 +5,8 @@
       <stop offset="0.55" stop-color="#10213A"/>
       <stop offset="1" stop-color="#1E1B4B"/>
     </linearGradient>
-    <marker id="up" viewBox="0 0 10 10" refX="5" refY="2" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M0 10 L5 0 L10 10 Z" fill="#3B82F6"/>
+    <marker id="head" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#3B82F6"/>
     </marker>
   </defs>
   <style>
@@ -32,7 +32,7 @@
   <circle cx="92" cy="420" r="26" fill="none" stroke="#3B82F6" stroke-width="2"/>
   <path d="M84 407 L104 420 L84 433 Z" fill="#FFFFFF"/>
   <text x="92" y="460" class="chip" text-anchor="middle">one run</text>
-  <line x1="92" y1="392" x2="92" y2="112" class="flow" marker-end="url(#up)"/>
+  <path d="M92 392 V132 H150" class="flow" fill="none" marker-end="url(#head)"/>
   <text x="112" y="250" class="where" transform="rotate(-90 112 250)" text-anchor="middle">load.py, then dbt run</text>
 
   <!-- 4 Power BI (top) -->

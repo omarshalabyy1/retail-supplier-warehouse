@@ -68,21 +68,21 @@
   <rect x="615" y="288" width="175" height="32" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.7"/><text x="625" y="309" class="name">dim_customer</text><text x="782" y="309" class="count" text-anchor="end">99,441</text>
   <rect x="615" y="334" width="175" height="32" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.7"/><text x="625" y="355" class="name">dim_seller</text><text x="782" y="355" class="count" text-anchor="end">3,095</text>
   <rect x="615" y="403.0" width="175" height="32" rx="7" fill="#13233D" stroke="#14B8A6" stroke-opacity="0.7"/><text x="625" y="424.0" class="name">dim_product</text><text x="782" y="424.0" class="count" text-anchor="end">32,951</text>
-  <path d="M375 166.0 C392.5 166.0 392.5 166.0 408 166.0" class="edge" marker-end="url(#arrow)"/>
-  <path d="M375 212.0 C392.5 212.0 392.5 212.0 408 212.0" class="edge" marker-end="url(#arrow)"/>
-  <path d="M375 258.0 C392.5 258.0 392.5 258.0 408 258.0" class="edge" marker-end="url(#arrow)"/>
-  <path d="M375 304.0 C392.5 304.0 392.5 304.0 408 304.0" class="edge" marker-end="url(#arrow)"/>
-  <path d="M375 350.0 C392.5 350.0 392.5 350.0 408 350.0" class="edge" marker-end="url(#arrow)"/>
-  <path d="M375 396.0 C392.5 396.0 392.5 419.0 408 419.0" class="edge" marker-end="url(#arrow)"/>
-  <path d="M375 442.0 C392.5 442.0 392.5 419.0 408 419.0" class="edge" marker-end="url(#arrow)"/>
-  <path d="M580 166.0 C597.5 166.0 597.5 166.0 613 166.0" class="edge" marker-end="url(#arrow)"/>
-  <path d="M580 166.0 C597.5 166.0 597.5 235.0 613 235.0" class="edge" marker-end="url(#arrow)"/>
-  <path d="M580 212.0 C597.5 212.0 597.5 235.0 613 235.0" class="edge" marker-end="url(#arrow)"/>
-  <path d="M580 258.0 C597.5 258.0 597.5 235.0 613 235.0" class="edge" marker-end="url(#arrow)"/>
-  <path d="M580 304.0 C597.5 304.0 597.5 304.0 613 304.0" class="edge" marker-end="url(#arrow)"/>
-  <path d="M580 350.0 C597.5 350.0 597.5 350.0 613 350.0" class="edge" marker-end="url(#arrow)"/>
-  <path d="M580 419.0 C597.5 419.0 597.5 419.0 613 419.0" class="edge" marker-end="url(#arrow)"/>
-  <path d="M790 235.0 C806 235.0 806 350.0 792 350.0" class="edge" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  <path d="M375 166.0 H409" class="edge" marker-end="url(#arrow)"/>
+  <path d="M375 212.0 H409" class="edge" marker-end="url(#arrow)"/>
+  <path d="M375 258.0 H409" class="edge" marker-end="url(#arrow)"/>
+  <path d="M375 304.0 H409" class="edge" marker-end="url(#arrow)"/>
+  <path d="M375 350.0 H409" class="edge" marker-end="url(#arrow)"/>
+  <path d="M375 396.0 H388 V411.0 H409" class="edge" marker-end="url(#arrow)"/>
+  <path d="M375 442.0 H394 V427.0 H409" class="edge" marker-end="url(#arrow)"/>
+  <path d="M580 166.0 H614" class="edge" marker-end="url(#arrow)"/>
+  <path d="M580 174.0 H599 V225.0 H614" class="edge" marker-end="url(#arrow)"/>
+  <path d="M580 212.0 H593 V235.0 H614" class="edge" marker-end="url(#arrow)"/>
+  <path d="M580 258.0 H587 V245.0 H614" class="edge" marker-end="url(#arrow)"/>
+  <path d="M580 304.0 H614" class="edge" marker-end="url(#arrow)"/>
+  <path d="M580 350.0 H614" class="edge" marker-end="url(#arrow)"/>
+  <path d="M580 419.0 H614" class="edge" marker-end="url(#arrow)"/>
+  <path d="M790 235.0 H805 V350.0 H791" class="edge" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
   <text x="612" y="450" class="where">dashed: dim_seller ranks sellers by late items in the fact</text>
   <path d="M800 150 H812 V435.0 H800" class="edge" stroke="#14B8A6"/>
   <line x1="812" y1="292.5" x2="830" y2="292.5" class="edge" stroke="#22C55E" marker-end="url(#arrow)"/>
