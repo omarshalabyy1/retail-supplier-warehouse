@@ -69,7 +69,7 @@ Three pages: **Sales**, **Suppliers** and **Late deliveries**. The [`powerbi/`](
 You need Docker Desktop, and Python 3.10+ for the notebook.
 
 1. Get the data (see [Data](#data)) and unzip the six CSV files into `data/input/` (the committed `departments.csv` is already there; [input guide](data/input/README.md)).
-2. Start the warehouse (Postgres on `localhost:5441`, user and password `warehouse`):
+2. Start the warehouse (Postgres on port 5441, user and password `warehouse`):
    ```bash
    docker compose up -d
    ```

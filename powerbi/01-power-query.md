@@ -15,7 +15,7 @@ Repeat steps 1 to 3 for each query below.
 
 ## Warehouse (staging only, not loaded)
 
-The warehouse from `docker-compose.yml`: server `127.0.0.1:5441`, database `warehouse`. Credentials: user `warehouse`, password `warehouse`.
+The warehouse from `docker-compose.yml`: port 5441, database `warehouse`. Credentials: user `warehouse`, password `warehouse`.
 
 ```m
 let

@@ -1,6 +1,6 @@
 # 6. Checks
 
-Once the report is built, every number below must match, with the year slicer on **Select all** unless the row says otherwise. They come from `analysis/analysis.ipynb` and from the SQL under each table (run it in any SQL tool against `localhost:5441`, database `warehouse`). If a number is off, the cause is in the measure or the model step named in the last column.
+Once the report is built, every number below must match, with the year slicer on **Select all** unless the row says otherwise. They come from `analysis/analysis.ipynb` and from the SQL under each table (run it in any SQL tool on port 5441, database `warehouse`). If a number is off, the cause is in the measure or the model step named in the last column.
 
 Data as loaded on 2026-10-04: orders from 2016-09-04 to 2018-09-03.
 

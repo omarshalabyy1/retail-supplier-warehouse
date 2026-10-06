@@ -37,7 +37,7 @@ Follow it top to bottom. **Check** lines are the numbers you must see before mov
 12. **Interactions** (`07-interactions.md`): set the three matrices.
     **Check:** on Suppliers, click a state bar: the table shows only that state's sellers, the two top-seller cards stay at 50.4% and 41.6%. On Late deliveries, click a column of the review chart: nothing else changes.
 13. **File → Save as** `powerbi/retail-supplier-warehouse.pbix`.
-14. Run every SQL query in `06-checks.md` (any SQL tool on `127.0.0.1:5441`, database `warehouse`). **Check:** each result matches its page.
+14. Run every SQL query in `06-checks.md` (any SQL tool on port 5441, database `warehouse`). **Check:** each result matches its page.
 
 ## Screenshots and finish
 
