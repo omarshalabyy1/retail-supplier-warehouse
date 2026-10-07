@@ -120,7 +120,6 @@ The notebook is [`analysis/analysis.ipynb`](../analysis/analysis.ipynb). The cel
 | **2.27 against 4.29 ("two stars")** | Average review of late orders against on-time orders. | Each delivered, reviewed order counted once. Late: 6,381 orders average 2.27. On time: 89,443 orders average 4.29. 4.29 − 2.27 = 2.02 stars. | notebook cell 10 |
 | **0 days** | The late rule: late means delivered more than 0 days after the promised date, so any later day. | `late_after_days` in `dbt/dbt_project.yml`. | `fact_order_items.sql` |
 | **Port 5441** | The database's door number. | Set in `docker-compose.yml` and `dbt/profiles.yml`. | `docker-compose.yml` |
-| **About half a minute** | How long loading and building takes. | Not measured anywhere in the repo: a rough time, it depends on the computer. | none |
 
 The seller numbers 3,660, 45,842, 3,604 and 64,347 are not printed in the notebook (it prints only the shares). They were rechecked by recounting the raw files with pandas, outside the database, and give the same shares.
 

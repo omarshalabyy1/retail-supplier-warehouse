@@ -79,7 +79,7 @@ You need Docker Desktop, and Python 3.10+ for the notebook.
    ```bash
    pip install -r requirements.txt pandas matplotlib jupyter
    ```
-4. Load the files, then build the star schema (about half a minute):
+4. Load the files, then build the star schema:
    ```bash
    python load.py
    cd dbt && dbt run && cd ..
