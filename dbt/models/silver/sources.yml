@@ -1,8 +1,8 @@
 version: 2
 
 sources:
-  - name: raw
-    description: The client's input files as loaded by load.py, the required columns as text.
+  - name: bronze
+    description: The Bronze layer, loaded by load.py, the required columns as text with their lineage. Refused rows are in bronze.quarantine, not here.
     tables:
       - name: orders
       - name: order_items

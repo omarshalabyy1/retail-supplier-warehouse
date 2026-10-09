@@ -1,8 +1,8 @@
 # 6. Checks
 
-Once the report is built, every number below must match, with the year slicer on **Select all** unless the row says otherwise. They come from `analysis/analysis.ipynb` and from the SQL under each table (run it in any SQL tool on port 5441, database `warehouse`). If a number is off, the cause is in the measure or the model step named in the last column.
+Once the report is built, every number below must match, with the year slicer on **Select all** unless the row says otherwise. They come from `analysis/analysis.ipynb` and from the SQL under each table, which reads the Analytical layer (schema `analytical`) (run it in any SQL tool on port 5441, database `warehouse`). If a number is off, the cause is in the measure or the model step named in the last column.
 
-Data as loaded on 2026-10-04: orders from 2016-09-04 to 2018-09-03.
+Data as loaded on 2026-10-09: orders from 2016-09-04 to 2018-09-03.
 
 ## Page 1: Sales
 
@@ -17,13 +17,13 @@ Data as loaded on 2026-10-04: orders from 2016-09-04 to 2018-09-03.
 | Year slicer = 2018 | Sales 7,386,050.80; Orders 53,775 | |
 
 ```sql
-select sum(price) as sales, count(distinct order_id) as orders,
-       sum(price) / count(distinct order_id) as average_order_value,
-       sum(freight) / sum(price) as freight_share
-from marts.fact_order_items;
+select sum(sales) as sales, sum(orders) as orders,
+       sum(sales) / sum(orders) as average_order_value,
+       sum(freight) / sum(sales) as freight_share
+from analytical.kpis_by_month;
 
-select extract(year from order_date) as year, sum(price) as sales, count(distinct order_id) as orders
-from marts.fact_order_items group by 1 order by 1;
+select left(year_month, 4) as year, sum(sales) as sales, sum(orders) as orders
+from analytical.kpis_by_month group by 1 order by 1;
 ```
 
 ## Page 2: Suppliers
@@ -40,12 +40,12 @@ from marts.fact_order_items group by 1 order by 1;
 | Click a state in the bar chart | the two top-seller cards stay at 50.4% and 41.6% | Both measures use `REMOVEFILTERS ( dim_seller )` |
 
 ```sql
-select sum(case when s.is_top_late_seller and f.is_late then 1 else 0 end)::numeric
-         / sum(case when f.is_late then 1 else 0 end)      as top_sellers_late_share,
-       sum(case when s.is_top_late_seller and f.is_delivered then 1 else 0 end)::numeric
-         / sum(case when f.is_delivered then 1 else 0 end) as top_sellers_delivered_share
-from marts.fact_order_items f
-join marts.dim_seller s using (seller_id);
+select sum(late_items) filter (where is_top_late_seller)::numeric / sum(late_items) as top_sellers_late_share,
+       sum(delivered_items) filter (where is_top_late_seller)::numeric / sum(delivered_items) as top_sellers_delivered_share
+from analytical.kpis_by_seller;
+
+select seller_id, delivered_items, late_items
+from analytical.kpis_by_seller order by late_rank limit 2;
 ```
 
 ## Page 3: Late deliveries
@@ -61,13 +61,9 @@ join marts.dim_seller s using (seller_id);
 | Department bar chart, top bar | health beauty, 7.6% | Top N filter is by `Delivered Items`, sort by `Late Item Rate` |
 
 ```sql
-select count(distinct order_id) filter (where is_late)::numeric
-       / count(distinct order_id) filter (where is_delivered) as late_order_rate
-from marts.fact_order_items;
+select left(year_month, 4) as year, sum(late_orders)::numeric / sum(delivered_orders) as late_order_rate
+from analytical.kpis_by_month group by rollup (1) order by 1;
 
-select is_late, avg(review_score) as average_review
-from (select distinct order_id, is_late, review_score
-      from marts.fact_order_items
-      where is_delivered and review_score is not null) o
-group by is_late;
+select delivery, average_review, reviewed_orders
+from analytical.review_by_lateness;
 ```

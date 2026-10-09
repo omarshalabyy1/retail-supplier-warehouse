@@ -6,11 +6,19 @@ vars:
   late_after_days: 0   # an order delivered more than this many days after the promised date is late
   top_sellers: 100     # how many sellers, most late items first, count as the "top sellers"
 
+# One folder and one schema per layer; each layer reads only the one before it
+# (the Semantic layer's dimensions read Silver and Gold, never the fact).
 models:
   retail_warehouse:
-    staging:
-      +schema: staging
+    silver:
+      +schema: silver
       +materialized: view
-    marts:
-      +schema: marts
+    gold:
+      +schema: gold
       +materialized: table
+    semantic:
+      +schema: semantic
+      +materialized: table
+    analytical:
+      +schema: analytical
+      +materialized: view

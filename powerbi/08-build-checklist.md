@@ -8,7 +8,7 @@ Follow it top to bottom. **Check** lines are the numbers you must see before mov
    ```bash
    docker compose up -d
    ```
-2. Load and build it (README, How to run it, step 4). **Check:** `dbt run` ends with `PASS=11` and no errors.
+2. Load and build it (README, How to run it, step 4). **Check:** `dbt run` ends with `PASS=17` and no errors.
 
 ## Power BI Desktop
 

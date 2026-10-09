@@ -4,4 +4,4 @@ select
     seller_zip_code_prefix   as zip_prefix,
     initcap(trim(seller_city)) as city,
     upper(trim(seller_state))  as state
-from {{ source('raw', 'sellers') }}
+from {{ source('bronze', 'sellers') }}

@@ -6,4 +6,4 @@ select
     seller_id,
     price::numeric(12, 2)             as price,
     freight_value::numeric(12, 2)     as freight
-from {{ source('raw', 'order_items') }}
+from {{ source('bronze', 'order_items') }}

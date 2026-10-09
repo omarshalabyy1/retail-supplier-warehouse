@@ -61,7 +61,7 @@ Right-click → **Hide in report view**. Report users pick fields from the dimen
 
 - In `fact_order_items`: `product_id`, `seller_id`, `customer_id`, `order_date`, `price`, `freight`, `delivery_days`, `review_score`, `order_item_id`.
 - In `dim_customer`: `customer_id`.
-- In `dim_seller`: `late_rank`, `is_top_late_seller` (used by the top-seller measures; set in the warehouse from `rules.top_sellers`, so the notebook, the SQL checks and the report share one ranking).
+- In `dim_seller`: `late_rank`, `is_top_late_seller` (used by the top-seller measures; set in the Gold layer by `gold.seller_late_rank` from `top_sellers` in `dbt/dbt_project.yml`, so the notebook, the SQL checks and the report share one ranking).
 
 Keep visible in the fact: `order_id`, `order_status`, `is_delivered`, `is_late`, `promised_date`, `delivered_date` (used on axes and in visual filters).
 

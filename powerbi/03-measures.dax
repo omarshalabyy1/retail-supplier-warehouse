@@ -100,7 +100,7 @@ RETURN
     DIVIDE ( [Late Items], AllLate )
 
 // Folder: Suppliers | Format: Percentage, 1 decimal | Share of all late items caused by the top sellers: the sellers flagged
-// dim_seller[is_top_late_seller] (the rules.top_sellers sellers with the most late items over all time, set in the warehouse).
+// dim_seller[is_top_late_seller] (the rules.top_sellers sellers with the most late items over all time, set in the Gold layer).
 // Ignores every seller filter (state, seller); follows the year slicer, while the flag itself stays all-time.
 Top Sellers Late Share =
 DIVIDE (

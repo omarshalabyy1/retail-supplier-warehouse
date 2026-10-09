@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 568" width="1000" height="568" role="img" aria-label="dbt lineage, left to right: 7 Bronze sources feed 7 Silver views; the Gold layer's order_delivery reads Silver orders, and seller_late_rank reads Silver order items and sellers plus order_delivery; the Semantic layer's fact_order_items reads Silver orders, order items and reviews plus Gold order_delivery, dim_seller reads Silver sellers and the Gold rank, dim_product reads Silver products and departments, dim_customer and dim_date read Silver; the 3 Analytical views read the fact, dim_date and dim_seller.">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#64748B"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Segoe UI", -apple-system, Helvetica, Arial, sans-serif; }
+    .title { font-size: 21px; font-weight: 700; fill: #0E1630; }
+    .sub { font-size: 13.5px; fill: #475569; }
+    .layer { font-size: 13px; font-weight: 700; fill: #0B1220; }
+    .where { font-size: 11.5px; fill: #506078; }
+    .name { font-size: 12.5px; fill: #0E1630; }
+    .bold { font-size: 13px; font-weight: 700; fill: #0E1630; }
+    .count { font-size: 11px; fill: #506078; }
+    .body { font-size: 12px; fill: #334155; }
+    .col { font-size: 12.5px; fill: #0E1630; }
+    .key { font-size: 11px; font-weight: 700; }
+    .edge { fill: none; stroke: #64748B; stroke-width: 1.3; }
+  </style>
+  <rect x="1" y="1" width="998" height="566" rx="22" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+  <text x="40" y="50" class="title">dbt lineage</text>
+  <text x="40" y="74" class="sub">Every dbt model and what it reads, from its source() and ref() calls. Bronze is the source load.py fills.</text>
+  <rect x="20" y="96" width="120" height="26" rx="13" fill="#3B82F6"/><text x="80.0" y="114" class="layer" text-anchor="middle">1  Bronze</text>
+  <text x="80.0" y="136" class="where" text-anchor="middle">schema bronze, text</text>
+  <rect x="214.5" y="96" width="120" height="26" rx="13" fill="#0EA5E9"/><text x="274.5" y="114" class="layer" text-anchor="middle">2  Silver</text>
+  <text x="274.5" y="136" class="where" text-anchor="middle">schema silver, views</text>
+  <rect x="409.0" y="96" width="136" height="26" rx="13" fill="#F59E0B"/><text x="477.0" y="114" class="layer" text-anchor="middle">3  Gold</text>
+  <text x="477.0" y="136" class="where" text-anchor="middle">schema gold, tables</text>
+  <rect x="619.5" y="96" width="140" height="26" rx="13" fill="#14B8A6"/><text x="689.5" y="114" class="layer" text-anchor="middle">4  Semantic</text>
+  <text x="689.5" y="136" class="where" text-anchor="middle">schema semantic, tables</text>
+  <rect x="834.0" y="96" width="146" height="26" rx="13" fill="#A855F7"/><text x="907.0" y="114" class="layer" text-anchor="middle">5  Analytical</text>
+  <text x="907.0" y="136" class="where" text-anchor="middle">schema analytical, views</text>
+  <path d="M759.5 284.0 C796.75 284.0 796.75 246.5 833.0 246.5" class="edge" marker-end="url(#arrow)"/>
+  <path d="M759.5 251.0 C796.75 251.0 796.75 255.5 833.0 255.5" class="edge" marker-end="url(#arrow)"/>
+  <path d="M759.5 377.0 C796.75 377.0 796.75 372.5 833.0 372.5" class="edge" marker-end="url(#arrow)"/>
+  <path d="M759.5 293.0 C796.75 293.0 796.75 381.5 833.0 381.5" class="edge" marker-end="url(#arrow)"/>
+  <path d="M759.5 302.0 C796.75 302.0 796.75 314.0 833.0 314.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M334.5 242.0 C371.75 242.0 371.75 167.0 408.0 167.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M334.5 288.5 C371.75 288.5 371.75 200.0 408.0 200.0" class="edge" marker-end="url(#arrow)"/>
+  <line x1="515.0" y1="184" x2="515.0" y2="191" class="edge" marker-end="url(#arrow)"/>
+  <path d="M334.5 372.5 C371.75 372.5 371.75 218.0 408.0 218.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M334.5 419.0 C477.0 419.0 477.0 419.0 618.5 419.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M334.5 251.0 C477.0 251.0 477.0 251.0 618.5 251.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M334.5 461.0 C477.0 461.0 477.0 477.5 618.5 477.5" class="edge" marker-end="url(#arrow)"/>
+  <path d="M334.5 503.0 C477.0 503.0 477.0 486.5 618.5 486.5" class="edge" marker-end="url(#arrow)"/>
+  <path d="M334.5 381.5 C477.0 381.5 477.0 372.5 618.5 372.5" class="edge" marker-end="url(#arrow)"/>
+  <path d="M545.0 209.0 C582.25 209.0 582.25 381.5 618.5 381.5" class="edge" marker-end="url(#arrow)"/>
+  <path d="M334.5 297.5 C477.0 297.5 477.0 279.5 618.5 279.5" class="edge" marker-end="url(#arrow)"/>
+  <path d="M334.5 260.0 C477.0 260.0 477.0 288.5 618.5 288.5" class="edge" marker-end="url(#arrow)"/>
+  <path d="M545.0 171.5 C582.25 171.5 582.25 297.5 618.5 297.5" class="edge" marker-end="url(#arrow)"/>
+  <path d="M334.5 335.0 C477.0 335.0 477.0 306.5 618.5 306.5" class="edge" marker-end="url(#arrow)"/>
+  <path d="M140 419.0 C177.25 419.0 177.25 419.0 213.5 419.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M140 503.0 C177.25 503.0 177.25 503.0 213.5 503.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M140 293.0 C177.25 293.0 177.25 293.0 213.5 293.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M140 251.0 C177.25 251.0 177.25 251.0 213.5 251.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M140 461.0 C177.25 461.0 177.25 461.0 213.5 461.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M140 335.0 C177.25 335.0 177.25 335.0 213.5 335.0" class="edge" marker-end="url(#arrow)"/>
+  <path d="M140 377.0 C177.25 377.0 177.25 377.0 213.5 377.0" class="edge" marker-end="url(#arrow)"/>
+  <rect x="20" y="234" width="120" height="34" rx="7" fill="#F8FAFC" stroke="#3B82F6" stroke-width="1.3"/><text x="30" y="256" class="name">orders</text>
+  <rect x="20" y="276" width="120" height="34" rx="7" fill="#F8FAFC" stroke="#3B82F6" stroke-width="1.3"/><text x="30" y="298" class="name">order_items</text>
+  <rect x="20" y="318" width="120" height="34" rx="7" fill="#F8FAFC" stroke="#3B82F6" stroke-width="1.3"/><text x="30" y="340" class="name">reviews</text>
+  <rect x="20" y="360" width="120" height="34" rx="7" fill="#F8FAFC" stroke="#3B82F6" stroke-width="1.3"/><text x="30" y="382" class="name">sellers</text>
+  <rect x="20" y="402" width="120" height="34" rx="7" fill="#F8FAFC" stroke="#3B82F6" stroke-width="1.3"/><text x="30" y="424" class="name">customers</text>
+  <rect x="20" y="444" width="120" height="34" rx="7" fill="#F8FAFC" stroke="#3B82F6" stroke-width="1.3"/><text x="30" y="466" class="name">products</text>
+  <rect x="20" y="486" width="120" height="34" rx="7" fill="#F8FAFC" stroke="#3B82F6" stroke-width="1.3"/><text x="30" y="508" class="name">departments</text>
+  <rect x="214.5" y="234" width="120" height="34" rx="7" fill="#F8FAFC" stroke="#0EA5E9" stroke-width="1.3"/><text x="224.5" y="256" class="name">orders</text>
+  <rect x="214.5" y="276" width="120" height="34" rx="7" fill="#F8FAFC" stroke="#0EA5E9" stroke-width="1.3"/><text x="224.5" y="298" class="name">order_items</text>
+  <rect x="214.5" y="318" width="120" height="34" rx="7" fill="#F8FAFC" stroke="#0EA5E9" stroke-width="1.3"/><text x="224.5" y="340" class="name">reviews</text>
+  <rect x="214.5" y="360" width="120" height="34" rx="7" fill="#F8FAFC" stroke="#0EA5E9" stroke-width="1.3"/><text x="224.5" y="382" class="name">sellers</text>
+  <rect x="214.5" y="402" width="120" height="34" rx="7" fill="#F8FAFC" stroke="#0EA5E9" stroke-width="1.3"/><text x="224.5" y="424" class="name">customers</text>
+  <rect x="214.5" y="444" width="120" height="34" rx="7" fill="#F8FAFC" stroke="#0EA5E9" stroke-width="1.3"/><text x="224.5" y="466" class="name">products</text>
+  <rect x="214.5" y="486" width="120" height="34" rx="7" fill="#F8FAFC" stroke="#0EA5E9" stroke-width="1.3"/><text x="224.5" y="508" class="name">departments</text>
+  <rect x="409.0" y="150" width="136" height="34" rx="7" fill="#F8FAFC" stroke="#F59E0B" stroke-width="1.3"/><text x="419.0" y="172" class="name">order_delivery</text>
+  <rect x="409.0" y="192" width="136" height="34" rx="7" fill="#F8FAFC" stroke="#F59E0B" stroke-width="1.3"/><text x="419.0" y="214" class="name">seller_late_rank</text>
+  <rect x="619.5" y="234" width="140" height="34" rx="7" fill="#F8FAFC" stroke="#14B8A6" stroke-width="1.3"/><text x="629.5" y="256" class="name">dim_date</text>
+  <rect x="619.5" y="276" width="140" height="34" rx="7" fill="#F8FAFC" stroke="#14B8A6" stroke-width="1.3"/><text x="629.5" y="298" class="name">fact_order_items</text>
+  <rect x="619.5" y="360" width="140" height="34" rx="7" fill="#F8FAFC" stroke="#14B8A6" stroke-width="1.3"/><text x="629.5" y="382" class="name">dim_seller</text>
+  <rect x="619.5" y="402" width="140" height="34" rx="7" fill="#F8FAFC" stroke="#14B8A6" stroke-width="1.3"/><text x="629.5" y="424" class="name">dim_customer</text>
+  <rect x="619.5" y="465.0" width="140" height="34" rx="7" fill="#F8FAFC" stroke="#14B8A6" stroke-width="1.3"/><text x="629.5" y="487.0" class="name">dim_product</text>
+  <rect x="834.0" y="234" width="146" height="34" rx="7" fill="#F8FAFC" stroke="#A855F7" stroke-width="1.3"/><text x="844.0" y="256" class="name">kpis_by_month</text>
+  <rect x="834.0" y="297.0" width="146" height="34" rx="7" fill="#F8FAFC" stroke="#A855F7" stroke-width="1.3"/><text x="844.0" y="319.0" class="name">review_by_lateness</text>
+  <rect x="834.0" y="360" width="146" height="34" rx="7" fill="#F8FAFC" stroke="#A855F7" stroke-width="1.3"/><text x="844.0" y="382" class="name">kpis_by_seller</text>
+</svg>

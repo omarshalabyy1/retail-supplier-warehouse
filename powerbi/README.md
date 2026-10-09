@@ -1,6 +1,6 @@
 # Power BI report
 
-Built in Power BI Desktop (free) on the warehouse's `marts` schema, by copying and pasting from the files below.
+Built in Power BI Desktop (free) on the warehouse's Semantic layer (schema `semantic`, the star schema), by copying and pasting from the files below.
 
 ## What it answers
 

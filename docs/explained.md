@@ -14,7 +14,7 @@ The store's data comes out as separate files: orders, the items in each order, p
 - Which sellers make customers wait?
 - Does a late delivery hurt the review the customer leaves?
 
-This project answers them. It loads the files into a database unchanged, cleans them with SQL, builds a **star schema** (one big table of order items with small lookup tables around it) and puts a Power BI report on top. A notebook computes every number in the README from that star schema.
+This project answers them. It loads the files into a database unchanged, cleans them with SQL, applies the business rules (which order is late, which sellers are late most often), builds a **star schema** (one big table of order items with small lookup tables around it) and a few summary views, and puts a Power BI report on top. A notebook computes every number in the README from the star schema and the summary views.
 
 Think of it like a parcel sorting hall. Every item that was ever ordered gets one ticket. The ticket says who sold it, what it is, who bought it, when it was promised and when it arrived. Once every item has a ticket in one pile, "which seller was late most often" is just a count of tickets.
 
@@ -37,15 +37,17 @@ Think of it like a parcel sorting hall. Every item that was ever ordered gets on
 | **SQL** | Structured Query Language: the language used to ask a database questions and build tables. Every `.sql` file in `dbt/models/` is SQL. |
 | **Table, row, column** | Like a spreadsheet sheet: each row is one thing (one order, one seller), each column is one fact about it (its date, its state). |
 | **CSV** | Comma-separated values: a plain text file of a table, one row per line. The seven inputs are CSV files. |
-| **Schema** | A folder of tables inside the database. This project has three: `raw` (the files as they came), `staging` (cleaned) and `marts` (the star schema the report reads). |
-| **Warehouse** | A database built for reporting, not for running the store. Here, the PostgreSQL database with the three schemas. |
+| **Schema** | A folder of tables inside the database. This project has one per layer (`bronze`, `silver`, `gold`, `semantic`, `analytical`) and `ops` for the load log. |
+| **Layer** | One step of the warehouse, each reading only the step before it: the **Bronze layer** (the files as they came, as text), the **Silver layer** (cleaned and typed), the **Gold layer** (the business rules: delivered, late, the seller late rank), the **Semantic layer** (the star schema), the **Analytical layer** (summary views: by month, by seller, review by lateness) and the **Reporting layer** (the notebook and Power BI). See [layers.svg](layers.svg). |
+| **Warehouse** | A database built for reporting, not for running the store. Here, the PostgreSQL database with the layer schemas. |
 | **ELT** | Extract, load, transform: load the files first, exactly as they are, then clean them inside the database. The opposite order (clean, then load) is ETL. |
 | **`COPY`** | The PostgreSQL command that loads a whole file into a table at once. `load.py` uses it. |
-| **`raw.load_log`** | A small table that records, for every load, which file went into which table and how many rows. |
-| **Transaction** | A group of database changes that either all happen or none do. `load.py` replaces the raw tables in one transaction, so a failed run leaves the old tables as they were. |
-| **dbt** | dbt Core ("data build tool"): a free program that runs SQL files in the right order and turns each into a table or a view. `dbt run` builds the staging and star schema layers. |
+| **`ops.load_log`** | A small table that records, for every load, which file went into which table: rows in the file, rows loaded, rows refused. |
+| **Quarantine** | `bronze.quarantine`: where `load.py` puts a row it refuses (a required value is empty, or a value would not turn into a date or number), with the file, the row number and the reason. In this data it holds 0 rows. |
+| **Transaction** | A group of database changes that either all happen or none do. `load.py` replaces the Bronze tables in one transaction, so a failed run leaves the old tables as they were. |
+| **dbt** | dbt Core ("data build tool"): a free program that runs SQL files in the right order and turns each into a table or a view. `dbt run` builds the Silver, Gold, Semantic and Analytical layers. |
 | **Model** | In dbt, one `.sql` file that builds one table or view. |
-| **View, table** | A table stores its rows. A view stores only its query and runs it when read. The staging layer is views; the star schema is tables. |
+| **View, table** | A table stores its rows. A view stores only its query and runs it when read. The Silver and Analytical layers are views; the Gold and Semantic layers are tables. |
 | **`vars`** | Settings in `dbt/dbt_project.yml`: `late_after_days: 0` and `top_sellers: 100`. The SQL reads them, so a rule can change without editing the SQL. |
 | **Fact table** | The big table of events you count and add up. Here `fact_order_items`: one row per order item. |
 | **Dimension table** | A smaller lookup table that describes the facts: `dim_product`, `dim_seller`, `dim_customer`, `dim_date`. You filter and group by them. |
@@ -58,7 +60,7 @@ Think of it like a parcel sorting hall. Every item that was ever ordered gets on
 | **Date table** | A dimension with one row per day, so every day exists even if nobody ordered on it. Power BI needs one to group by month and year. |
 | **Distinct count** | Counting each value once. Because the fact has one row per item, an order with 3 items appears 3 times; a distinct count of `order_id` counts it once. |
 | **SCD type 2** | Slowly changing dimension, type 2: keeping the old version of a row when it changes (for example a seller who moves state). The README says why it is not used yet. |
-| **Lineage** | Which table is built from which. [dbt-lineage.png](dbt-lineage.png) draws it. |
+| **Lineage** | Which table is built from which. [dbt-lineage.svg](dbt-lineage.svg) draws it, model by model. |
 | **Python, pandas** | Python is a programming language. pandas is its library for tables. The notebook uses them. |
 | **Notebook** | `analysis/analysis.ipynb`, a file that mixes code, its output and notes. It computes every number in the README. |
 | **Docker, Docker Compose** | Docker runs programs in a ready-made box called a container, so nobody installs PostgreSQL by hand. `docker-compose.yml` says which box to start. |
@@ -74,13 +76,14 @@ Run in this order (the commands are in the README's "How to run it" section):
 | Step | File | What it does |
 |---|---|---|
 | 0 | `docker-compose.yml` | Starts PostgreSQL 17 in a container on port 5441. |
-| 1 | `load.py` | Checks the 7 input files before touching the database: each file exists, has its required columns, and every product category has a department. If not, it stops with one line. Then it loads only the required columns, as text, into 7 `raw` tables with `COPY`, in one transaction, and writes each row count to `raw.load_log`. |
-| 2 | `dbt/models/staging/*.sql` | 6 views that clean the raw tables: turn text into dates and numbers, tidy city names and state codes, keep one review per order, and give each product its department. |
-| 3 | `dbt/models/marts/fact_order_items.sql` | The fact table and the business rules. Joins each item to its order and review, and works out `is_delivered`, `is_late` and `delivery_days`. |
-| 3 | `dbt/models/marts/dim_*.sql` | The four dimensions. `dim_seller` also ranks every seller by late items and flags the top 100 (`late_rank`, `is_top_late_seller`). `dim_date` has one row per day. |
-| 3 | `dbt/dbt_project.yml` | The two settings: late after 0 days, top 100 sellers. Also says staging is views and marts are tables. |
-| 4 | `analysis/analysis.ipynb` | Reads the star schema with SQL, computes every number in the README and draws the charts in `docs/charts/`. |
-| 5 | `powerbi/` | Step-by-step instructions to build the three-page Power BI report: queries, model, 18 measures, pages, and the numbers each card must show (`06-checks.md`). |
+| 1 | `load.py` | Checks the 7 input files before touching the database: each file exists, has its required columns, and every product category has a department. If not, it stops with one line. Then it loads only the required columns, as text, into 7 `bronze` tables with `COPY`, in one transaction, each row with its file, row number and run id. A row with an empty required value, or a value that would not turn into a date or number, goes to `bronze.quarantine` with the reason instead (0 rows here). An empty file or a key that appears twice stops the run. Each table's counts go to `ops.load_log`. |
+| 2 | `dbt/models/silver/*.sql` | Silver layer, 7 views that clean the Bronze tables: turn text into dates and numbers, tidy city names and state codes, keep one review per order. Products keep their category code; `departments` maps each code to a department. |
+| 3 | `dbt/models/gold/*.sql` | Gold layer, the business rules. `order_delivery` works out `is_delivered`, `is_late` and `delivery_days` for every order. `seller_late_rank` counts each seller's late items, ranks the sellers and flags the top 100 (`late_rank`, `is_top_late_seller`). |
+| 4 | `dbt/models/semantic/*.sql` | Semantic layer, the star schema. `fact_order_items` joins each item to its order, its delivery rules and its review. The four dimensions: `dim_product` (with its department), `dim_seller` (with its rank from Gold), `dim_customer`, `dim_date` (one row per day). |
+| 5 | `dbt/models/analytical/*.sql` | Analytical layer, 3 views over the star schema: `kpis_by_month` (sales and late counts per month), `kpis_by_seller` (delivered and late items per seller), `review_by_lateness` (average review, late against on time). |
+| 2 to 5 | `dbt/dbt_project.yml` | The two settings: late after 0 days, top 100 sellers. Also says which layers are views and which are tables. |
+| 6 | `analysis/analysis.ipynb` | Reporting layer: reads the Analytical and Semantic layers with SQL (and `ops.load_log` for the load counts), computes every number in the README and draws the charts in `docs/charts/`. |
+| 6 | `powerbi/` | Reporting layer: Step-by-step instructions to build the three-page Power BI report: queries, model, 18 measures, pages, and the numbers each card must show (`06-checks.md`). |
 
 The 7 input files: 6 come from the store (orders, order items, products, sellers, customers, reviews; you download them, see Data in the README) and 1 is a small mapping file committed in `data/input/` (`departments.csv`, category code to department). [`data/input/README.md`](../data/input/README.md) lists every column.
 
@@ -90,12 +93,12 @@ The notebook's notes still call the two settings `rules.late_after_days` and `ru
 
 One real order from the data, `001c85b5…`. It holds one item: product `84f45695…` in category `cama_mesa_banho`, sold by seller `4a3ca931…` from Ibitinga, São Paulo state (SP), price BRL 99.00 plus BRL 13.71 freight. The customer gave it 2 stars.
 
-1. **Load.** `load.py` copies the order, item, product, seller and review rows into the `raw` tables exactly as written, all as text: `"2017-12-22 18:37:40"` is still just characters.
-2. **Clean.** The staging views turn the text into types. Ordered at 19:19 on 24 Nov 2017, delivered at 18:37 on 22 Dec 2017, promised for 14 Dec 2017 (the promised date is kept as a date only). The price becomes the number 99.00. The category `cama_mesa_banho` becomes the department **bed bath table** through `departments.csv`. The city `ibitinga` becomes `Ibitinga`. The order has one review, so there is nothing to choose between.
-3. **Delivered.** The status is `delivered` and there is a delivery date, so `is_delivered` is true.
+1. **Load.** `load.py` copies the order, item, product, seller and review rows into the `bronze` tables exactly as written, all as text: `"2017-12-22 18:37:40"` is still just characters.
+2. **Clean.** The Silver views turn the text into types. Ordered at 19:19 on 24 Nov 2017, delivered at 18:37 on 22 Dec 2017, promised for 14 Dec 2017 (the promised date is kept as a date only). The price becomes the number 99.00. The category code `cama_mesa_banho` stays on the product; in the Semantic layer `dim_product` shows it as the department **bed bath table** through `departments.csv`. The city `ibitinga` becomes `Ibitinga`. The order has one review, so there is nothing to choose between.
+3. **Delivered.** In the Gold layer: the status is `delivered` and there is a delivery date, so `is_delivered` is true.
 4. **Late.** The delivery day (22 Dec) is later than the promised day plus 0 days (14 Dec), so `is_late` is true: 8 days late. Had it arrived any time on 14 Dec, it would be on time, because the rule compares days, not hours.
 5. **Delivery days.** 22 Dec − 24 Nov = 28 days, stored as `delivery_days`.
-6. **Seller rank.** This is one of the 189 late items of seller `4a3ca931…`, more than any other seller, so in `dim_seller` it has `late_rank` 1 and `is_top_late_seller` true.
+6. **Seller rank.** This is one of the 189 late items of seller `4a3ca931…`, more than any other seller, so `gold.seller_late_rank` gives it `late_rank` 1 and `is_top_late_seller` true, and `dim_seller` shows both.
 7. **Counting.** In the notebook this order adds BRL 99.00 to sales (freight is left out), 1 to delivered orders, 1 to late orders, 1 to late items, and its 2 stars go into the "Late" review average.
 
 The review row is dated 16 Dec 2017, six days before the parcel arrived: the customer rated the order while still waiting for it.
@@ -108,20 +111,20 @@ The notebook is [`analysis/analysis.ipynb`](../analysis/analysis.ipynb). The cel
 
 | Number | What it means | How it is worked out | Where |
 |---|---|---|---|
-| **99,441 orders** | Every order in the orders file. | Rows loaded into `raw.orders`, read back from `raw.load_log`. | notebook cell 3 |
-| **112,650 order items** | Every item of every order. | Rows in `fact_order_items` (and in `raw.order_items`: none is lost). | notebook cell 3 |
+| **99,441 orders** | Every order in the orders file. | Rows loaded into `bronze.orders`, read back from `ops.load_log`. | notebook cell 3 |
+| **112,650 order items** | Every item of every order. | Rows in `fact_order_items` (and in `bronze.order_items`: none is lost, none refused). | notebook cell 3 |
 | **3,095 sellers** | Every seller in the sellers file. All of them sold at least one item. | Rows in `dim_seller`. | notebook cell 3 |
 | **96,470 delivered orders** | Orders with status `delivered` and a delivery date. | Distinct count of `order_id` where `is_delivered`. | notebook cell 5 |
 | **6,534 late orders, 6.8%** | Delivered orders that arrived after the promised day. | Distinct count of `order_id` where `is_late`. 6,534 / 96,470 = 6.8%. | notebook cell 5 |
-| **100 of the 3,095 sellers** | The top sellers: the 100 with the most late items. | `dim_seller.late_rank` 1 to 100. 100 is `top_sellers` in `dbt/dbt_project.yml`. | `dim_seller.sql`; notebook cell 7 |
+| **100 of the 3,095 sellers** | The top sellers: the 100 with the most late items. | `late_rank` 1 to 100 in `gold.seller_late_rank`. 100 is `top_sellers` in `dbt/dbt_project.yml`. | `seller_late_rank.sql`; notebook cell 7 |
 | **50.4% of late items ("half")** | The share of all late items that came from those 100 sellers. | 3,660 late items of the top 100 / 7,264 late items in total. | notebook cell 7 |
 | **41.6% of delivered items** | The share of all delivered items those 100 sellers shipped. | 45,842 / 110,189 delivered items. | notebook cell 7 |
 | **8.0% against 5.6%** | How often an item is late: top 100 sellers against every other seller. | Top 100: 3,660 late / 45,842 delivered = 8.0%. The other 2,995: 3,604 late / 64,347 delivered = 5.6%. | notebook cell 7 |
 | **2.27 against 4.29 ("two stars")** | Average review of late orders against on-time orders. | Each delivered, reviewed order counted once. Late: 6,381 orders average 2.27. On time: 89,443 orders average 4.29. 4.29 − 2.27 = 2.02 stars. | notebook cell 10 |
-| **0 days** | The late rule: late means delivered more than 0 days after the promised date, so any later day. | `late_after_days` in `dbt/dbt_project.yml`. | `fact_order_items.sql` |
+| **0 days** | The late rule: late means delivered more than 0 days after the promised date, so any later day. | `late_after_days` in `dbt/dbt_project.yml`. | `order_delivery.sql` |
 | **Port 5441** | The database's door number. | Set in `docker-compose.yml` and `dbt/profiles.yml`. | `docker-compose.yml` |
 
-The seller numbers 3,660, 45,842, 3,604 and 64,347 are not printed in the notebook (it prints only the shares). They were rechecked by recounting the raw files with pandas, outside the database, and give the same shares.
+The seller numbers 3,660, 45,842, 3,604 and 64,347 are not printed in the notebook (it prints only the shares). They are the sums of `analytical.kpis_by_seller` (top 100 against the rest), and were rechecked by recounting the input files with pandas, outside the database.
 
 The two charts in the README are drawn by the notebook: [late-items-by-seller.png](charts/late-items-by-seller.png) in cell 8 (its title rounds 50.4% to 50%), and [review-late-vs-on-time.png](charts/review-late-vs-on-time.png) in cell 10. A third chart, [sales-by-month.png](charts/sales-by-month.png), is drawn in cell 14 and used by the Power BI checks, not the README.
 
@@ -146,12 +149,12 @@ These are not in the README but are on the Power BI check list (`powerbi/06-chec
 
 Things that can look wrong but are not:
 
-- **99,441 orders loaded, but 98,666 in the fact table.** The fact table is built from items. 775 orders have no item at all (603 `unavailable`, 164 `canceled`, 5 `created`, 2 `invoiced`, 1 `shipped`, counted with pandas on the raw file). They stay in `raw.orders` and `stg_orders`, but have nothing to put in the fact.
+- **99,441 orders loaded, but 98,666 in the fact table.** The fact table is built from items. 775 orders have no item at all (603 `unavailable`, 164 `canceled`, 5 `created`, 2 `invoiced`, 1 `shipped`, counted with pandas on the input file). They stay in `bronze.orders`, `silver.orders` and `gold.order_delivery`, but have nothing to put in the fact.
 - **6.8% of orders are late, but 6.6% of items.** Two different counts. 6,534 late orders hold 7,264 late items, because one order can hold several items.
 - **Half is 50.4%.** The headline rounds it. The exact count is 3,660 of 7,264.
 - **Exactly which 100 sellers are "top" is partly a tie-break.** The sellers ranked 93 to 107 all have 15 late items. The rank breaks the tie by `seller_id`, so it is the same on every run. The 50.4% does not move whichever of them are picked, because each has the same 15 late items; the 41.6% and 8.0% could move slightly.
 - **96,478 orders have the status `delivered`, but 96,470 are counted as delivered.** 8 of them have no delivery date, so the project cannot say if they were late. 6 orders have a delivery date but another status; they are not counted as delivered either.
-- **99,224 reviews, but 98,673 reviewed orders.** 547 orders were reviewed more than once (551 extra rows). `stg_reviews` keeps the latest review per order.
+- **99,224 reviews, but 98,673 reviewed orders.** 547 orders were reviewed more than once (551 extra rows). `silver.reviews` keeps the latest review per order.
 - **6,534 late orders, but 6,381 in the review average.** 153 late orders have no review.
 - **99,441 customers, the same as orders.** The data gives a new `customer_id` to every order. `customer_unique_id` is the real person: 96,096 of them, counted with pandas.
 - **Sales of 2016 + 2017 + 2018 add up to the total.** 49,785.92 + 6,155,806.98 + 7,386,050.80 = 13,591,643.70, and 312 + 44,579 + 53,775 = 98,666 orders (2018 is in `06-checks.md`; 2016 was counted with pandas).
@@ -161,19 +164,21 @@ Things that can look wrong but are not:
 | Number | Where you see it | What it means |
 |---|---|---|
 | **7 CSV files, 6 store exports** | data-flow.svg, layers.svg | The 6 files from the store plus `departments.csv`. |
-| **99,441** | data-flow.svg, data-model.svg, layers.svg, header.svg | Rows in `raw.orders`, `stg_orders`, `raw.customers`, `stg_customers` and `dim_customer`: one customer row per order. |
-| **112,650** | data-flow.svg, data-model.svg, layers.svg | Rows in `raw.order_items`, `stg_order_items` and `fact_order_items`: the item count never changes. |
-| **99,224 → 98,673** | data-flow.svg | Review rows in `raw.reviews`, then one per order in `stg_reviews` (see above). |
-| **3,095** | data-flow.svg, data-model.svg, header.svg | Rows in `raw.sellers`, `stg_sellers` and `dim_seller`. |
-| **32,951** | data-flow.svg, data-model.svg | Rows in `raw.products`, `stg_products` and `dim_product`. Every product was sold at least once. |
-| **73** | data-flow.svg | Rows in `departments.csv`: one per category code. |
+| **99,441** | data-flow.svg, data-model.svg, layers.svg, header.svg | Rows in `bronze.orders`, `silver.orders`, `gold.order_delivery`, `bronze.customers`, `silver.customers` and `dim_customer`: one customer row per order. |
+| **112,650** | data-flow.svg, data-model.svg, layers.svg | Rows in `bronze.order_items`, `silver.order_items` and `fact_order_items`: the item count never changes. |
+| **99,224 → 98,673** | data-flow.svg | Review rows in `bronze.reviews`, then one per order in `silver.reviews` (see above). |
+| **3,095** | data-flow.svg, data-model.svg, header.svg | Rows in `bronze.sellers`, `silver.sellers`, `gold.seller_late_rank` and `dim_seller`. |
+| **32,951** | data-flow.svg, data-model.svg | Rows in `bronze.products`, `silver.products` and `dim_product`. Every product was sold at least once. |
+| **73** | data-flow.svg | Rows in `departments.csv`, `bronze.departments` and `silver.departments`: one per category code. |
 | **1,096** | data-flow.svg, data-model.svg | Days in `dim_date`: whole years from 1 Jan 2016 to 31 Dec 2018 (366 + 365 + 365), around the first order (4 Sep 2016) and the last (3 Sep 2018). |
-| **446,875 rows** | layers.svg | All 7 raw tables together: 99,441 + 112,650 + 32,951 + 3,095 + 99,441 + 99,224 + 73. |
+| **446,875 rows** | layers.svg | All 7 Bronze tables together: 99,441 + 112,650 + 32,951 + 3,095 + 99,441 + 99,224 + 73. |
 | **6.8%, 50.4%, 41.6%, 100** | header.svg | The headline numbers from the table above. |
 | **1 to \*** | data-model.svg | One dimension row links to many fact rows: one seller has many items. |
-| **1, 2, 3, 4** | how-it-works.svg, layers.svg, data-flow.svg | The four steps or layers: raw, staging, star schema, Power BI. |
+| **0** | layers.svg, data-flow.svg | Rows in `bronze.quarantine`: no row of this data was refused. |
+| **24, 3,095, 2** | data-flow.svg | Rows in the Analytical views: 24 order months, one row per seller, late and on time. |
+| **1 to 6** | how-it-works.svg, layers.svg, data-flow.svg | The six layers: Bronze, Silver, Gold, Semantic, Analytical, Reporting. |
 
-The diagram row counts come from counting each table after a run; they are not in the notebook. The staging and `dim_date` counts were rechecked from the raw files with pandas.
+The diagram row counts come from counting each table after a run; they are not in the notebook. The Silver and `dim_date` counts were rechecked from the input files with pandas.
 
 ## 5. What the results mean for the business
 
@@ -198,10 +203,10 @@ Big sellers ship more, so they will have more late items even if they are no wor
 So the ranking is worked out once and everyone reads the same answer: the notebook, the SQL checks and Power BI all use `is_top_late_seller`. If Power BI ranked sellers itself, a filter on the page could change who is "top" and the cards would stop matching the notebook.
 
 **Why load everything as text and clean in SQL?**
-The raw layer then holds the input values unchanged, so any number can be traced back to the file it came from. If a cleaning rule changes, I change one SQL file and rebuild, without loading again.
+The Bronze layer then holds the input values unchanged, so any number can be traced back to the file it came from. If a cleaning rule changes, I change one SQL file and rebuild, without loading again.
 
 **How do you avoid duplicates if the load runs twice?**
-`load.py` drops and recreates each raw table inside one transaction, and dbt rebuilds every table from those. Running it twice gives the same result, and a failed run leaves the old tables in place.
+`load.py` drops and recreates each Bronze table inside one transaction, and dbt rebuilds every table from those. Running it twice gives the same result, and a failed run leaves the old tables in place.
 
 **Why no scheduler and no incremental load?**
 The source is a fixed export that never changes, so there is nothing to refresh on a timer, and 446,875 rows rebuild quickly. With a live daily feed I would schedule it and load only new rows.
@@ -213,7 +218,7 @@ That would make a snowflake: Power BI would need one more join for every visual 
 The ids in the export are stable and each seller appears once, with nothing changing over time to track. With a live seller feed where a seller can move state, I would add a dbt snapshot to keep the old versions, and a surrogate key to tell them apart.
 
 **How do you know the numbers are right?**
-`load.py` refuses to load if a file, a column or a department mapping is missing, and `raw.load_log` keeps every row count. The notebook computes every README number from the star schema with plain SQL, and `powerbi/06-checks.md` lists the number each Power BI card must show, with the SQL to check it. There are no automated dbt tests: the data is a fixed export, so I checked it once. With a live feed I would add tests for unique keys, missing values and broken links between tables.
+`load.py` refuses to load if a file, a column or a department mapping is missing, a file is empty or a key appears twice; it puts any row it cannot read into `bronze.quarantine` with the reason, and `ops.load_log` keeps every row count. Sales add up to the same BRL 13,591,643.70 in the Bronze, Silver, Semantic and Analytical layers. The notebook computes every README number from the Analytical and Semantic layers with plain SQL, and `powerbi/06-checks.md` lists the number each Power BI card must show, with the SQL to check it. There are no automated dbt tests: the data is a fixed export, so I checked it once. With a live feed I would add tests for unique keys, missing values and broken links between tables.
 
 ## 7. Limits, in plain words
 

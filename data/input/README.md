@@ -1,7 +1,7 @@
 # Input files
 
 The seven input files, as CSV with a header row, UTF-8. The file names are set in `FILES` in `load.py`.
-Extra columns are ignored and only the columns below are loaded. Before the database is touched, `python load.py` stops with a one-line message if a file is missing, a required column is not there, or a product category has no department.
+Extra columns are ignored and only the columns below are loaded. Before the database is touched, `python load.py` stops with a one-line message if a file is missing, a required column is not there, or a product category has no department. While loading, an empty file or a key that appears twice also stops it, and a row with an empty value in a column that must be filled (`NOT_EMPTY` in `load.py`), or a value that is not a valid whole number, decimal or date (`TYPES`), goes to `bronze.quarantine` with the reason instead of its Bronze table.
 
 ## orders
 

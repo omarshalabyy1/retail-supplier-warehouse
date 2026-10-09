@@ -1,8 +1,8 @@
 # 1. Power Query
 
-Five queries read the five tables of the `marts` schema. One extra query, `Warehouse`, holds the connection, so the server name is typed once.
+Five queries read the five tables of the Semantic layer (schema `semantic`), the star schema. One extra query, `Warehouse`, holds the connection, so the server name is typed once.
 
-**Before you start:** the warehouse is running (`docker compose up -d`) and has been loaded and built once (main README), so the `marts` tables exist.
+**Before you start:** the warehouse is running (`docker compose up -d`) and has been loaded and built once (main README), so the `semantic` tables exist.
 
 ## Connect
 
@@ -13,7 +13,7 @@ Five queries read the five tables of the `marts` schema. One extra query, `Wareh
 
 Repeat steps 1 to 3 for each query below.
 
-## Warehouse (staging only, not loaded)
+## Warehouse (connection only, not loaded)
 
 The warehouse from `docker-compose.yml`: port 5441, database `warehouse`. Credentials: user `warehouse`, password `warehouse`.
 
@@ -31,7 +31,7 @@ Right-click `Warehouse` → untick **Enable load**. It only feeds the other quer
 ```m
 let
     Source = Warehouse,
-    Table = Source{[Schema = "marts", Item = "fact_order_items"]}[Data],
+    Table = Source{[Schema = "semantic", Item = "fact_order_items"]}[Data],
     Typed = Table.TransformColumnTypes(Table, {
         {"order_id", type text},
         {"order_item_id", Int64.Type},
@@ -58,7 +58,7 @@ in
 ```m
 let
     Source = Warehouse,
-    Table = Source{[Schema = "marts", Item = "dim_product"]}[Data],
+    Table = Source{[Schema = "semantic", Item = "dim_product"]}[Data],
     Typed = Table.TransformColumnTypes(Table, {
         {"product_id", type text},
         {"department", type text}
@@ -72,7 +72,7 @@ in
 ```m
 let
     Source = Warehouse,
-    Table = Source{[Schema = "marts", Item = "dim_seller"]}[Data],
+    Table = Source{[Schema = "semantic", Item = "dim_seller"]}[Data],
     Typed = Table.TransformColumnTypes(Table, {
         {"seller_id", type text},
         {"zip_prefix", type text},
@@ -90,7 +90,7 @@ in
 ```m
 let
     Source = Warehouse,
-    Table = Source{[Schema = "marts", Item = "dim_customer"]}[Data],
+    Table = Source{[Schema = "semantic", Item = "dim_customer"]}[Data],
     Typed = Table.TransformColumnTypes(Table, {
         {"customer_id", type text},
         {"customer_unique_id", type text},
@@ -107,7 +107,7 @@ in
 ```m
 let
     Source = Warehouse,
-    Table = Source{[Schema = "marts", Item = "dim_date"]}[Data],
+    Table = Source{[Schema = "semantic", Item = "dim_date"]}[Data],
     Typed = Table.TransformColumnTypes(Table, {
         {"date", type date},
         {"year", Int64.Type},

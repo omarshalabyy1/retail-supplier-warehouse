@@ -2,7 +2,7 @@
 with bounds as (
     select date_trunc('year', min(purchased_at))::date as first_day,
            (date_trunc('year', max(purchased_at)) + interval '1 year - 1 day')::date as last_day
-    from {{ ref('stg_orders') }}
+    from {{ ref('orders') }}
 )
 select
     d::date                              as date,

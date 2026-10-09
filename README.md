@@ -24,13 +24,13 @@ An online store sells products from thousands of sellers, its suppliers. Orders,
 
 ## 🛠️ The solution
 
-A warehouse built in one run. The input files are checked and load as they are, SQL cleans them, a star schema answers the questions, and a Power BI report reads the result.
+A warehouse built in one run. The input files are checked and load as they are, SQL cleans them, the business rules flag late orders and rank sellers, a star schema and a few summary views answer the questions, and a Power BI report reads the result.
 
 ![How it works](docs/how-it-works.svg)
 
-The mental model is four layers. Each one only reads the layer below it, so a mistake can be traced down to the file it came from.
+The mental model is six layers, left to right. Each one reads only the layer before it, so a mistake can be traced back to the file it came from. A row the load refuses is kept in `bronze.quarantine` with the reason.
 
-![One warehouse, four layers](docs/layers.svg)
+![One warehouse, six layers](docs/layers.svg)
 
 ## 📈 The result
 
@@ -51,9 +51,9 @@ Every number above is computed in [`analysis/analysis.ipynb`](analysis/analysis.
 
 | Number | Measured as |
 |---|---|
-| Orders loaded | Rows in `raw.orders` after the load (`raw.load_log` keeps the count of every load) |
+| Orders loaded | Rows in `bronze.orders` after the load (`ops.load_log` keeps the count of every load, and of the rows refused to `bronze.quarantine`: 0) |
 | Late | Order delivered (status `delivered` with a delivery date) on a later day than the date promised to the customer |
-| Seller share of late items | Late items of the 100 sellers with the most late items (`dim_seller.is_top_late_seller`, ties broken by seller id), over all late items. Counted per item, because one order can hold items from several sellers |
+| Seller share of late items | Late items of the 100 sellers with the most late items (`is_top_late_seller`, set in the Gold layer by `gold.seller_late_rank`, ties broken by seller id), over all late items. Counted per item, because one order can hold items from several sellers |
 | Average review | Each reviewed order counted once; when an order was reviewed twice, the latest review |
 
 ## 📊 Power BI report
@@ -79,7 +79,7 @@ You need Docker Desktop, and Python 3.10+ for the notebook.
    ```bash
    pip install -r requirements.txt pandas matplotlib jupyter
    ```
-4. Load the files, then build the star schema:
+4. Load the files into the Bronze layer, then build the other layers:
    ```bash
    python load.py
    cd dbt && dbt run && cd ..
@@ -96,29 +96,33 @@ Every table, the tables it is built from, and its row count after one run:
 
 ![Data flow, table by table](docs/data-flow.svg)
 
-The star schema Power BI imports:
+The Semantic layer, the star schema Power BI imports:
 
 ![The star schema](docs/data-model.svg)
 
-The same lineage as dbt draws it (`dbt docs generate`, then `dbt docs serve`):
+The same lineage as dbt sees it, model by model, from each model's `source()` and `ref()`:
 
-![dbt lineage graph: 7 raw sources, 6 staging views, the fact and four dimensions](docs/dbt-lineage.png)
+![dbt lineage: 7 Bronze sources, 7 Silver views, 2 Gold tables, the fact and four dimensions in the Semantic layer, 3 Analytical views](docs/dbt-lineage.svg)
 
 | Decision | Why |
 |---|---|
-| Load the required columns as text, clean in SQL (ELT) | The raw layer holds the input values unchanged, so any number can be traced back and the cleaning can change without reloading |
+| Load the required columns as text, clean in SQL (ELT) | The Bronze layer holds the input values unchanged, with the file and row each came from, so any number can be traced back and the cleaning can change without reloading |
+| Refuse a bad row, stop on a bad file | A row with an empty required value or a value that would not convert goes to `bronze.quarantine` with the reason (0 rows in this data). A missing file or column, an empty file, a key that appears twice or a category without a department stops the load before anything changes |
 | Full reload in one transaction, no scheduler | The source is a fixed export that never changes, so there is nothing to refresh on a timer. Running it again gives the same result |
 | One fact at order-item grain | Sales, freight and seller live on the item. Order-level facts (status, dates, lateness, review) repeat on each item, so measures count orders and reviews once with a distinct count |
+| Seller late rank in the Gold layer, from Silver | A rule belongs in Gold, and a dimension built from the fact would be a loop. `dim_seller` reads the rank from `gold.seller_late_rank` |
 | Department as a column of `dim_product` | A star, not a snowflake: one join fewer for every Power BI visual |
 | No history (SCD type 2) on sellers yet | The export holds each seller once, with no changes to track. With a live seller feed, a dbt snapshot would add it |
 
 ```
-load.py                  checks the input files, then loads them into the raw schema, logged in raw.load_log
-dbt/models/staging/      6 views: types, names, one review per order, departments in English
-dbt/models/marts/        the star schema: fact_order_items and four dimensions
+load.py                  Bronze layer: checks the input files, loads them as text, refused rows to bronze.quarantine, logged in ops.load_log
+dbt/models/silver/       Silver layer, 7 views: types, names, one review per order
+dbt/models/gold/         Gold layer: the delivery rules per order and the seller late rank
+dbt/models/semantic/     Semantic layer: the star schema, fact_order_items and four dimensions
+dbt/models/analytical/   Analytical layer, 3 views: by month, by seller, review by lateness
 dbt/dbt_project.yml      the two rules: late after 0 days, top 100 sellers
-analysis/analysis.ipynb  every number in this README
-powerbi/                 the report, step by step
+analysis/analysis.ipynb  every number in this README, from the Semantic and Analytical layers
+powerbi/                 Reporting layer: the report, step by step
 ```
 
 Stack: PostgreSQL 17, Python, dbt Core, Docker Compose, Power BI Desktop.
