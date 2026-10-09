@@ -1,51 +1,56 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 240" width="1000" height="240" role="img" aria-label="Retail supplier warehouse. 99,441 orders in one star schema: 100 of 3,095 sellers account for half of all late-delivered items. Bars show the 100 sellers' share of late items against their share of delivered items.">
   <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="0.55" stop-color="#10213A"/>
+      <stop offset="1" stop-color="#0E1630"/>
+    </linearGradient>
       <radialGradient id="jrGlowA" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#7C3AED" stop-opacity="0.08"/>
+      <stop offset="0" stop-color="#7C3AED" stop-opacity="0.4"/>
       <stop offset="1" stop-color="#7C3AED" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="jrGlowB" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#14B8A6" stop-opacity="0.08"/>
+      <stop offset="0" stop-color="#14B8A6" stop-opacity="0.3"/>
       <stop offset="1" stop-color="#14B8A6" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <style>
     text { font-family: "Segoe UI", -apple-system, Helvetica, Arial, sans-serif; }
-    .eyebrow { font-size: 13px; font-weight: 600; fill: #1D4ED8; letter-spacing: 1.5px; }
-    .title { font-size: 30px; font-weight: 700; fill: #0E1630; }
-    .result { font-size: 15px; fill: #475569; }
-    .chip { font-size: 13px; font-weight: 600; fill: #0E1630; }
-    .cap { font-size: 11.5px; fill: #506078; }
-    .val { font-size: 13px; font-weight: 600; fill: #0E1630; }
+    .eyebrow { font-size: 13px; font-weight: 600; fill: #60A5FA; letter-spacing: 1.5px; }
+    .title { font-size: 30px; font-weight: 700; fill: #FFFFFF; }
+    .result { font-size: 15px; fill: #CBD5E1; }
+    .chip { font-size: 13px; font-weight: 600; fill: #FFFFFF; }
+    .cap { font-size: 11.5px; fill: #94A3B8; }
+    .val { font-size: 13px; font-weight: 600; fill: #FFFFFF; }
       .wave { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 2 10; animation: flow 6s linear infinite; }
     @keyframes flow { to { stroke-dashoffset: -120; } }
   </style>
 
-  <rect x="1" y="1" width="998" height="238" rx="22" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+  <rect width="1000" height="240" rx="22" fill="url(#bg)"/>
   <circle cx="880" cy="60" r="190" fill="url(#jrGlowA)"/>
   <circle cx="160" cy="220" r="170" fill="url(#jrGlowB)"/>
-  <path class="wave" stroke="#14B8A6" stroke-opacity="0.5" d="M24 229 C 200 224, 330 233, 500 229 S 800 225, 976 229"/>
-  <path class="wave" stroke="#8B5CF6" stroke-opacity="0.4" style="animation-duration:9s" d="M40 235 C 220 231, 360 238, 520 235 S 820 232, 960 235"/>
+  <path class="wave" stroke="#2DD4BF" stroke-opacity="0.5" d="M24 229 C 200 224, 330 233, 500 229 S 800 225, 976 229"/>
+  <path class="wave" stroke="#A78BFA" stroke-opacity="0.4" style="animation-duration:9s" d="M40 235 C 220 231, 360 238, 520 235 S 820 232, 960 235"/>
 
   <text x="50" y="62" class="eyebrow">PROJECT · RETAIL DATA WAREHOUSE</text>
   <text x="50" y="104" class="title">Retail supplier warehouse</text>
   <text x="50" y="136" class="result">99,441 orders in one star schema:</text>
   <text x="50" y="157" class="result">100 of 3,095 sellers account for half of all late-delivered items.</text>
 
-  <rect x="50" y="180" width="150" height="30" rx="15" fill="#0F172A" fill-opacity="0.06"/>
+  <rect x="50" y="180" width="150" height="30" rx="15" fill="#FFFFFF" fill-opacity="0.08"/>
   <text x="125" y="200" class="chip" text-anchor="middle">99,441 orders</text>
-  <rect x="210" y="180" width="150" height="30" rx="15" fill="#0F172A" fill-opacity="0.06"/>
+  <rect x="210" y="180" width="150" height="30" rx="15" fill="#FFFFFF" fill-opacity="0.08"/>
   <text x="285" y="200" class="chip" text-anchor="middle">3,095 sellers</text>
   <rect x="370" y="180" width="150" height="30" rx="15" fill="#3B82F6" fill-opacity="0.25"/>
   <text x="445" y="200" class="chip" text-anchor="middle">6.8% arrive late</text>
 
   <text x="640" y="80" class="cap">The 100 sellers with the most late items</text>
   <text x="640" y="110" class="cap">Share of late items</text>
-  <rect x="640" y="118" width="300" height="18" rx="4" fill="#0F172A" fill-opacity="0.06"/>
+  <rect x="640" y="118" width="300" height="18" rx="4" fill="#FFFFFF" fill-opacity="0.08"/>
   <rect x="640" y="118" width="151.2" height="18" rx="4" fill="#3B82F6"/>
   <text x="799" y="132" class="val">50.4%</text>
   <text x="640" y="162" class="cap">Share of delivered items</text>
-  <rect x="640" y="170" width="300" height="18" rx="4" fill="#0F172A" fill-opacity="0.06"/>
-  <rect x="640" y="170" width="124.8" height="18" rx="4" fill="#94A3B8"/>
+  <rect x="640" y="170" width="300" height="18" rx="4" fill="#FFFFFF" fill-opacity="0.08"/>
+  <rect x="640" y="170" width="124.8" height="18" rx="4" fill="#E2E8F0"/>
   <text x="772" y="184" class="val">41.6%</text>
 </svg>
