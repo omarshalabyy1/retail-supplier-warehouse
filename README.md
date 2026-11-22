@@ -30,7 +30,7 @@ A warehouse built in one run. The input files are checked and load as they are, 
 
 The mental model is six layers, left to right. Each one reads only the layer before it, so a mistake can be traced back to the file it came from. A row the load refuses is kept in `bronze.quarantine` with the reason.
 
-![High level architecture: 7 store CSV files load into PostgreSQL, Bronze (8 tables, with bronze.quarantine) by load.py, then dbt builds Silver (7 views), Gold (2 tables), Semantic (the star schema, 1 fact and 4 dimensions in 5 tables) and Analytical (3 views); the 3-page Power BI report reads 5 semantic tables and the notebook reads 6 tables and views](docs/architecture.drawio.svg)
+![Architecture: 7 CSV files in data/input/, the Python loader load.py fills the bronze schema, dbt Core on PostgreSQL 17 builds silver, gold, semantic and analytical, then the Python notebook and the Power BI report read the result](docs/architecture.drawio.svg)
 
 ## 📈 The result
 
@@ -92,13 +92,13 @@ You need Docker Desktop, and Python 3.10+ for the notebook.
 
 ## 🏗️ For engineers
 
-Every table and the tables it is built from:
+The steps in run order:
 
-![Data flow, table by table: 7 CSV files into 8 Bronze tables (including bronze.quarantine), 7 Silver views, 2 Gold tables, 5 Semantic tables and 3 Analytical views, read by the Power BI report and the notebook; 51 lines, each a read in the code](docs/data-flow.drawio.svg)
+![Data flow: input files, Bronze (load.py), Silver (7 views), Gold (2 tables), Semantic (star schema, 5 tables), Analytical (3 views), Reporting (notebook and Power BI, which also read the Semantic tables)](docs/data-flow.drawio.svg)
 
 The Semantic layer, the star schema Power BI imports:
 
-![The star schema: fact_order_items with dim_seller, dim_product, dim_customer and dim_date, every column with its PostgreSQL type; dbt declares no keys or relationship tests, so no relationship lines are drawn](docs/star-schema.drawio.svg)
+![Star schema: fact_order_items with dim_product, dim_seller, dim_customer and dim_date, every column with its type, keys marked, one many-to-one line per relationship in the Power BI model](docs/star-schema.drawio.svg)
 
 | Decision | Why |
 |---|---|
